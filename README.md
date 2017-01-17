@@ -26,11 +26,11 @@ Supports iOS and Android.
 
 Supported Gestures:
 
-TapCommand (ICommand)
-TapCommand2 (Command<Point>)
-SwipeLeftCommand
-SwipeRightCommand
-SwipeTopCommand
-SwipeBottomCommand
+    TapCommand (ICommand)
+    TapCommand2 (Command<Point>)
+    SwipeLeftCommand
+    SwipeRightCommand
+    SwipeTopCommand
+    SwipeBottomCommand
 
 Only commands are supported. No .NET handler. So you must use the MVVM pattern (https://developer.xamarin.com/guides/xamarin-forms/xaml/xaml-basics/data_bindings_to_mvvm/).
