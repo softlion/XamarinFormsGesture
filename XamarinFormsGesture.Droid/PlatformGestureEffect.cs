@@ -1,0 +1,195 @@
+// Do not remove this notice
+// Copyright (c)2016 Vapolia. All rights reserved.
+// Usage licence automatically acquired by Vapolia's customers when added to their product's source code under a contract signed with Vapolia.
+
+using System;
+using System.ComponentModel;
+using System.Windows.Input;
+using Android.Support.V4.View;
+using Android.Util;
+using Android.Views;
+using Vapolia.Droid.Lib.Effects;
+using Vapolia.Lib.Ui;
+using Xamarin.Forms;
+using Xamarin.Forms.Platform.Android;
+using View = Android.Views.View;
+
+[assembly: ResolutionGroupName("Vapolia")]
+[assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
+
+namespace Vapolia.Droid.Lib.Effects
+{
+    public class PlatformGestureEffect : PlatformEffect
+    {
+        private GestureDetectorCompat gestureRecognizer;
+        private readonly InternalGestureDetector tapDetector;
+        private Command<Point> tapCommand2;
+        private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        private DisplayMetrics displayMetrics;
+
+        public PlatformGestureEffect()
+        {
+            tapDetector = new InternalGestureDetector
+            {
+                TapAction = motionEvent =>
+                {
+                    var tap = tapCommand2;
+                    if (tap != null)
+                    {
+                        var x = motionEvent.GetX();
+                        var y = motionEvent.GetY();
+
+                        var point = PxToDp(new Point(x,y));
+                        //Log.WriteLine(LogPriority.Debug, "gesture", $"Tap detected at {x} x {y} in forms: {point.X} x {point.Y}");
+                        if (tap.CanExecute(point))
+                            tap.Execute(point);
+                    }
+                    var handler = tapCommand;
+                    if (handler?.CanExecute(null) == true)
+                        handler.Execute(null);
+                },
+                SwipeLeftAction = motionEvent =>
+                {
+                    var handler = swipeLeftCommand;
+                    if (handler?.CanExecute(null) == true)
+                        handler.Execute(null);
+                },
+                SwipeRightAction = motionEvent =>
+                {
+                    var handler = swipeRightCommand;
+                    if (handler?.CanExecute(null) == true)
+                        handler.Execute(null);
+                },
+                SwipeTopAction = motionEvent =>
+                {
+                    var handler = swipeTopCommand;
+                    if (handler?.CanExecute(null) == true)
+                        handler.Execute(null);
+                },
+                SwipeBottomAction = motionEvent =>
+                {
+                    var handler = swipeBottomCommand;
+                    if (handler?.CanExecute(null) == true)
+                        handler.Execute(null);
+                },
+            };
+        }
+
+        private Point PxToDp(Point point)
+        {
+            point.X = point.X / displayMetrics.Density;
+            point.Y = point.Y / displayMetrics.Density;
+            return point;
+        }
+
+        protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)
+        {
+            tapCommand = Gesture.GetTapCommand(Element);
+            tapCommand2 = Gesture.GetTapCommand2(Element);
+            swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
+            swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
+            swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
+            swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
+        }
+
+        protected override void OnAttached()
+        {
+            var control = Control ?? Container;
+
+            var context = control.Context;
+            displayMetrics = context.Resources.DisplayMetrics;
+            tapDetector.Density = displayMetrics.Density;
+
+            if (gestureRecognizer == null)
+                gestureRecognizer = new GestureDetectorCompat(context, tapDetector);
+            control.Touch += ControlOnTouch;
+
+            OnElementPropertyChanged(new PropertyChangedEventArgs(String.Empty));
+        }
+
+        private void ControlOnTouch(object sender, View.TouchEventArgs touchEventArgs)
+        {
+            gestureRecognizer?.OnTouchEvent(touchEventArgs.Event);
+        }
+
+        protected override void OnDetached()
+        {
+            var control = Control ?? Container;
+            control.Touch -= ControlOnTouch;
+        }
+
+
+        sealed class InternalGestureDetector : GestureDetector.SimpleOnGestureListener
+        {
+            private const int SwipeThresholdInPoints = 40;
+
+            public Action<MotionEvent> TapAction { get; set; }
+            public Action<MotionEvent> SwipeLeftAction { get; set; }
+            public Action<MotionEvent> SwipeRightAction { get; set; }
+            public Action<MotionEvent> SwipeTopAction { get; set; }
+            public Action<MotionEvent> SwipeBottomAction { get; set; }
+
+            public float Density { get; set; }
+
+            public override bool OnSingleTapUp(MotionEvent e)
+            {
+                TapAction?.Invoke(e);
+                return true;
+            }
+
+            public override bool OnFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+            {
+                var dx = e2.RawX - e1.RawX;
+                var dy = e2.RawY - e1.RawY;
+                if (Math.Abs(dx) > SwipeThresholdInPoints * Density)
+                {
+                    if(dx>0)
+                        SwipeRightAction?.Invoke(e2);
+                    else
+                        SwipeLeftAction?.Invoke(e2);
+                }
+                else if (Math.Abs(dy) > SwipeThresholdInPoints * Density)
+                {
+                    if (dy > 0)
+                        SwipeBottomAction?.Invoke(e2);
+                    else
+                        SwipeTopAction?.Invoke(e2);
+                }
+                return true;
+            }
+        }
+
+
+        //sealed class GestureDetector : Java.Lang.Object, Android.Views.GestureDetector.IOnGestureListener
+        //{
+        //    const int SWIPING_THRESHOLD = 20;
+        //    const int SWIPED_THRESHOLD = 100;
+
+        //    public event 
+
+        //    public bool OnDown(MotionEvent e)
+        //    {
+        //    }
+
+        //    public bool OnFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+        //    {
+        //    }
+
+        //    public void OnLongPress(MotionEvent e)
+        //    {
+        //    }
+
+        //    public bool OnScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
+        //    {
+        //    }
+
+        //    public void OnShowPress(MotionEvent e)
+        //    {
+        //    }
+
+        //    public bool OnSingleTapUp(MotionEvent e)
+        //    {
+        //    }
+        //}
+    }
+}
