@@ -11,6 +11,7 @@
       Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your PCL, Android and iOS projects.
     </description>
     <releaseNotes>
+      1.0.1: fix ios version for XamForms DependencyService (changed internal to public in class definition)
     </releaseNotes>
     <summary>Bring all gestures to Xamarin Forms</summary>
     <language>en-US</language>
@@ -22,7 +23,7 @@
 
     <dependencies>
       <group>
-        <dependency id="Xamarin.Forms" version="2.3.3.180" />
+        <dependency id="Xamarin.Forms" version="2.3.3" />
       </group>
     </dependencies>
     <references></references>

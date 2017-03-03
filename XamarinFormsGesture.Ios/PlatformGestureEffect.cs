@@ -17,7 +17,7 @@ using Xamarin.Forms.Platform.iOS;
 
 namespace Vapolia.Ios.Lib.Effects
 {
-    internal class PlatformGestureEffect : PlatformEffect
+    public class PlatformGestureEffect : PlatformEffect
     {
         private readonly UITapGestureRecognizer tapDetector;
         private readonly UISwipeGestureRecognizer swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector;
