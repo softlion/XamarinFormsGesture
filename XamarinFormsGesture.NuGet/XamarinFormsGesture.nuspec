@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Vapolia.XamarinFormsGesture</id>
-    <version>1.0.0-pre1</version>
+    <version>0.0.0</version>
 
     <title>XamarinFormsGesture</title>
     <authors>Benjamin Mayrargue</authors>
@@ -11,6 +11,7 @@
       Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your PCL, Android and iOS projects.
     </description>
     <releaseNotes>
+      1.1.0: add pan gesture
       1.0.1: fix ios version for XamForms DependencyService (changed internal to public in class definition)
     </releaseNotes>
     <summary>Bring all gestures to Xamarin Forms</summary>
@@ -19,7 +20,7 @@
     <iconUrl>https://github.com/softlion/XamarinFormsGesture/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/softlion/XamarinFormsGesture/license</licenseUrl>
-    <copyright>Copiright 2016-2017</copyright>
+    <copyright>Copyright 2016-2017 vapolia.fr</copyright>
 
     <dependencies>
       <group>
@@ -38,7 +39,7 @@
 
     <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\.NETPortable0.0-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\XamarinFormsGesture.dll" />
 
-    <file src="tools\" target="tools" />
+    <!--<file src="tools\" target="tools" />-->
 
     <!--<file src="lib\" target="lib" />
     <file src="content\" target="content" />-->

@@ -21,10 +21,16 @@ namespace Vapolia.Ios.Lib.Effects
     {
         private readonly UITapGestureRecognizer tapDetector;
         private readonly UISwipeGestureRecognizer swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector;
+        private readonly UIPanGestureRecognizer panDetector;
         private readonly List<UIGestureRecognizer> recognizers;
 
         private Command<Point> tapCommand2;
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        private Command<Point> panCommand;
+
+        public static void Init()
+        {
+        }
 
         public PlatformGestureEffect()
         {
@@ -40,10 +46,13 @@ namespace Vapolia.Ios.Lib.Effects
             swipeUpDetector = CreateSwipeRecognizer(() => swipeTopCommand, UISwipeGestureRecognizerDirection.Up);
             swipeDownDetector = CreateSwipeRecognizer(() => swipeBottomCommand, UISwipeGestureRecognizerDirection.Down);
 
+            panDetector = CreatePanRecognizer(() => panCommand);
+
             recognizers = new List<UIGestureRecognizer>
             {
                 tapDetector,
                 swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector,
+                panDetector
             };
         }
 
@@ -55,10 +64,7 @@ namespace Vapolia.Ios.Lib.Effects
                 if (handler != null)
                 {
                     var control = Control ?? Container;
-                    var tapPoint = recognizer.LocationInView(control);
-                    var point = PxToDp(new Point(tapPoint.X, tapPoint.Y));
-                    //Log.WriteLine(LogPriority.Debug, "gesture", $"Tap detected at {x} x {y} in forms: {point.X} x {point.Y}");
-
+                    var point = recognizer.LocationInView(control);
                     if (handler.Item2?.CanExecute(point) == true)
                         handler.Item2.Execute(point);
                     if(handler.Item1?.CanExecute(null) == true)
@@ -83,16 +89,27 @@ namespace Vapolia.Ios.Lib.Effects
             {
                 Enabled = false,
                 ShouldRecognizeSimultaneously = (recognizer, gestureRecognizer) => true,
-                //ShouldReceiveTouch = (recognizer, touch) => true,
                 Direction = direction
             };
         }
 
-        private Point PxToDp(Point point)
+        private UIPanGestureRecognizer CreatePanRecognizer(Func<Command<Point>> getCommand)
         {
-            //point.X = point.X / displayMetrics.Density;
-            //point.Y = point.Y / displayMetrics.Density;
-            return point;
+            return new UIPanGestureRecognizer(recognizer =>
+            {
+                var handler = getCommand();
+                if (handler != null)
+                {
+                    var control = Control ?? Container;
+                    var point = recognizer.TranslationInView(control);
+                    if (handler.CanExecute(point))
+                        handler.Execute(point);
+                }
+            })
+            {
+                Enabled = false,
+                ShouldRecognizeSimultaneously = (recognizer, gestureRecognizer) => true,
+            };
         }
 
         protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)
@@ -103,6 +120,7 @@ namespace Vapolia.Ios.Lib.Effects
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
+            panCommand = Gesture.GetPanCommand(Element);
         }
 
         protected override void OnAttached()

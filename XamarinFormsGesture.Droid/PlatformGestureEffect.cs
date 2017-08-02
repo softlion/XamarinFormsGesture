@@ -23,9 +23,13 @@ namespace Vapolia.Droid.Lib.Effects
     {
         private GestureDetectorCompat gestureRecognizer;
         private readonly InternalGestureDetector tapDetector;
-        private Command<Point> tapCommand2;
+        private Command<Point> tapCommand2, panCommand;
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
         private DisplayMetrics displayMetrics;
+
+        public static void Init()
+        {
+        }
 
         public PlatformGestureEffect()
         {
@@ -33,16 +37,15 @@ namespace Vapolia.Droid.Lib.Effects
             {
                 TapAction = motionEvent =>
                 {
-                    var tap = tapCommand2;
-                    if (tap != null)
+                    var command = tapCommand2;
+                    if (command != null)
                     {
                         var x = motionEvent.GetX();
                         var y = motionEvent.GetY();
 
                         var point = PxToDp(new Point(x,y));
-                        //Log.WriteLine(LogPriority.Debug, "gesture", $"Tap detected at {x} x {y} in forms: {point.X} x {point.Y}");
-                        if (tap.CanExecute(point))
-                            tap.Execute(point);
+                        if (command.CanExecute(point))
+                            command.Execute(point);
                     }
                     var handler = tapCommand;
                     if (handler?.CanExecute(null) == true)
@@ -72,6 +75,21 @@ namespace Vapolia.Droid.Lib.Effects
                     if (handler?.CanExecute(null) == true)
                         handler.Execute(null);
                 },
+                PanAction = (initialDown, currentMove) =>
+                {
+                    var command = panCommand;
+                    if (command != null)
+                    {
+                        var x0 = initialDown.GetX();
+                        var y0 = initialDown.GetY();
+                        var x = currentMove.GetX();
+                        var y = currentMove.GetY();
+
+                        var point = PxToDp(new Point(x-x0, y-y0));
+                        if (command.CanExecute(point))
+                            command.Execute(point);
+                    }
+                },
             };
         }
 
@@ -90,6 +108,7 @@ namespace Vapolia.Droid.Lib.Effects
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
+            panCommand = Gesture.GetPanCommand(Element);
         }
 
         protected override void OnAttached()
@@ -128,12 +147,19 @@ namespace Vapolia.Droid.Lib.Effects
             public Action<MotionEvent> SwipeRightAction { get; set; }
             public Action<MotionEvent> SwipeTopAction { get; set; }
             public Action<MotionEvent> SwipeBottomAction { get; set; }
+            public Action<MotionEvent, MotionEvent> PanAction { get; set; }
 
             public float Density { get; set; }
 
             public override bool OnSingleTapUp(MotionEvent e)
             {
                 TapAction?.Invoke(e);
+                return true;
+            }
+
+            public override bool OnScroll(MotionEvent initialDown, MotionEvent currentMove, float distanceX, float distanceY)
+            {
+                PanAction?.Invoke(initialDown, currentMove);
                 return true;
             }
 
