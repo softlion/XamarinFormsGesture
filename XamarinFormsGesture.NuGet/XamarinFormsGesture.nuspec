@@ -24,7 +24,7 @@
 
     <dependencies>
       <group>
-        <dependency id="Xamarin.Forms" version="2.3.3" />
+        <dependency id="Xamarin.Forms" version="2.3.5" />
       </group>
     </dependencies>
     <references></references>
