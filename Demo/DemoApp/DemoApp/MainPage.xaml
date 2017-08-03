@@ -16,11 +16,15 @@
         <StackLayout>
             <Label Text="2.Drag a finger in this space"  />
             <BoxView WidthRequest="300" HeightRequest="200" ui:Gesture.PanCommand="{Binding PanCommand}" IsEnabled="True" InputTransparent="False" BackgroundColor="Yellow" />
-            <StackLayout Orientation="Horizontal">
-                <Label Text="dX:"/>
-                <Label Text="{Binding PanX}" WidthRequest="50" />
-                <Label Text="dY:"/>
-                <Label Text="{Binding PanY}" WidthRequest="50" />
+            <StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="dX:"/>
+                    <Label Text="{Binding PanX}" />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="dY:"/>
+                    <Label Text="{Binding PanY}" />
+                </StackLayout>
             </StackLayout>
         </StackLayout>
 
