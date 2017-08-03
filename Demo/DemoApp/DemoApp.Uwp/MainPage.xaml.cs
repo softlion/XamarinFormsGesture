@@ -20,7 +20,6 @@ namespace DemoApp.Uwp
         public MainPage()
         {
             this.InitializeComponent();
-            Vapolia.Uw.Lib.Effects.PlatformGestureEffect.Init();
             LoadApplication(new DemoApp.App());
         }
     }
