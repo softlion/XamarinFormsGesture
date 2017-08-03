@@ -4,6 +4,8 @@ to ALL your Xamarin Forms projects (ios, android, shared/pcl).
 
 In your Android/ios projects, before initializing xamarin forms, call PlatformGestureEffect.Init() to force the discovery of the gestures by the Xamarin Forms plugin engine.
 
+The elements on which the gesture is applied must have the property **Enabled="True"** and **InputTransparent="True"** which activates user interaction on them.
+
 # XamarinFormsGesture
 Xamarin Form Gesture Effects  
 Supports iOS and Android.
@@ -14,9 +16,11 @@ Add "advanced" gestures to Xamarin Forms. Available on all views. Sample use:
 
 # Quick start
 
-Add Gesture.TapCommand on any xaml view:
+Add Gesture.TapCommand on any supported xaml view:
 
-    <Label Text="Click here" Style="{StaticResource LinkLabel}" ui:Gesture.TapCommand="{Binding OpenLinkCommand}" />
+        <StackLayout ui:Gesture.TapCommand="{Binding OpenLinkCommand}">
+            <Label Text="1.Tap this to open an url"  />
+        </StackLayout>
 
 Declare the corresponding namespace:
 

@@ -65,8 +65,9 @@ namespace Vapolia.Ios.Lib.Effects
                 {
                     var control = Control ?? Container;
                     var point = recognizer.LocationInView(control);
-                    if (handler.Item2?.CanExecute(point) == true)
-                        handler.Item2.Execute(point);
+                    var pt = new Point(point.X, point.Y);
+                    if (handler.Item2?.CanExecute(pt) == true)
+                        handler.Item2.Execute(pt);
                     if(handler.Item1?.CanExecute(null) == true)
                         handler.Item1.Execute(null);
                 }
@@ -102,13 +103,15 @@ namespace Vapolia.Ios.Lib.Effects
                 {
                     var control = Control ?? Container;
                     var point = recognizer.TranslationInView(control);
-                    if (handler.CanExecute(point))
-                        handler.Execute(point);
+                    var pt = new Point(point.X, point.Y);
+                    if (handler.CanExecute(pt))
+                        handler.Execute(pt);
                 }
             })
             {
                 Enabled = false,
                 ShouldRecognizeSimultaneously = (recognizer, gestureRecognizer) => true,
+                MaximumNumberOfTouches = 1,
             };
         }
 
