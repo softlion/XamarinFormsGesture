@@ -11,6 +11,7 @@
       Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your PCL, Android and iOS projects.
     </description>
     <releaseNotes>
+      1.1.1: add universal windows implementation
       1.1.0: add pan gesture
       1.0.1: fix ios version for XamForms DependencyService (changed internal to public in class definition)
     </releaseNotes>
@@ -26,22 +27,27 @@
       <group>
         <dependency id="Xamarin.Forms" version="2.3.5" />
       </group>
+      <group targetFramework="uap10.0">
+      </group>
     </dependencies>
     <references></references>
     <tags>xamarin forms gesture tap swipe</tags>
   </metadata>
   <files>
+    <!-- forms droid -->
     <file src="..\XamarinFormsGesture.Droid\bin\Release\XamarinFormsGesture.Droid.dll" target="lib\MonoAndroid1.0\XamarinFormsGesture.Droid.dll" />
     <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\MonoAndroid1.0\XamarinFormsGesture.dll" />
 
+    <!-- forms ios -->
     <file src="..\XamarinFormsGesture.Ios\bin\Release\XamarinFormsGesture.Ios.dll" target="lib\Xamarin.iOS1.0\XamarinFormsGesture.Ios.dll" />
     <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\Xamarin.iOS1.0\XamarinFormsGesture.dll" />
 
-    <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\.NETPortable0.0-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\XamarinFormsGesture.dll" />
+    <!-- forms PCL -->
+    <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\.NETPortable0.0-win+net45+MonoAndroid10+Xamarin.iOS10+xamarinmac20\XamarinFormsGesture.dll" />
 
-    <!--<file src="tools\" target="tools" />-->
-
-    <!--<file src="lib\" target="lib" />
-    <file src="content\" target="content" />-->
+    <!-- universal (win10) -->
+    <file src="..\XamarinFormsGesture.Uw\bin\Release\XamarinFormsGesture.Uw.dll" target="lib\uap10.0\XamarinFormsGesture.Uw.dll" />
+    <file src="..\XamarinFormsGesture.Uw\bin\Release\XamarinFormsGesture.Uw.pri" target="lib\uap10.0\XamarinFormsGesture.Uw.pri" />
+    <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\uap10.0\XamarinFormsGesture.dll" />
   </files>
 </package>
