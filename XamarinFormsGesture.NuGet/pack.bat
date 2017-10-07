@@ -13,7 +13,7 @@ set version=2.0.0
 nuget pack XamarinFormsGesture.nuspec -Version "%version%"
 nuget push Vapolia.XamarinFormsGesture.*.nupkg -Source %nugetServer%
 
-pause
+rem pause
 
 @rem set assembly info to version
 @rem https://gist.github.com/derekgates/4678882
