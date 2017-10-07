@@ -11,6 +11,7 @@
       Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your PCL, Android and iOS projects.
     </description>
     <releaseNotes>
+      2.0.0: netstandard 1.4, xamarin forms 2.4
       1.1.1: add universal windows implementation
       1.1.0: add pan gesture
       1.0.1: fix ios version for XamForms DependencyService (changed internal to public in class definition)
@@ -25,7 +26,7 @@
 
     <dependencies>
       <group>
-        <dependency id="Xamarin.Forms" version="2.3.5" />
+        <dependency id="Xamarin.Forms" version="2.4.0" />
       </group>
       <group targetFramework="uap10.0">
       </group>
@@ -42,8 +43,8 @@
     <file src="..\XamarinFormsGesture.Ios\bin\Release\XamarinFormsGesture.Ios.dll" target="lib\Xamarin.iOS1.0\XamarinFormsGesture.Ios.dll" />
     <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\Xamarin.iOS1.0\XamarinFormsGesture.dll" />
 
-    <!-- forms PCL -->
-    <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\.NETPortable0.0-win+net45+MonoAndroid10+Xamarin.iOS10+xamarinmac20\XamarinFormsGesture.dll" />
+    <!-- forms shared -->
+    <file src="..\XamarinFormsGesture\bin\Release\XamarinFormsGesture.dll" target="lib\netstandard1.4\XamarinFormsGesture.dll" />
 
     <!-- universal (win10) -->
     <file src="..\XamarinFormsGesture.Uw\bin\Release\XamarinFormsGesture.Uw.dll" target="lib\uap10.0\XamarinFormsGesture.Uw.dll" />

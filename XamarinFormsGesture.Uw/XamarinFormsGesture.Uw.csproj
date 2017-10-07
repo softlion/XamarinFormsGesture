@@ -113,7 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XamarinFormsGesture\XamarinFormsGesture.csproj">
-      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Project>{ba6bb0ee-4ad6-4d3a-a08c-709f1bed1222}</Project>
       <Name>XamarinFormsGesture</Name>
     </ProjectReference>
   </ItemGroup>
