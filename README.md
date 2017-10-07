@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/8t8m8n0do3p0304n?svg=true)](https://ci.appveyor.com/project/softlion/xamarinformsgesture)
+
 # TL;DR
 Add the nuget package https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/
 to ALL your Xamarin Forms projects (ios, android, shared/pcl).
