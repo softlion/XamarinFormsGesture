@@ -12,9 +12,14 @@ The elements on which the gesture is applied must have the property **IsEnabled=
 Xamarin Form Gesture Effects  
 Supports iOS and Android.
 
-Add "advanced" gestures to Xamarin Forms. Available on all views. Sample use:
+Add "advanced" gestures to Xamarin Forms. Available on all views. Usage in XAML:
 
     <Label Text="Click here" Style="{StaticResource LinkLabel}" IsEnabled="True" ui:Gesture.TapCommand="{Binding OpenLinkCommand}" />
+
+Or in code:
+
+    var label = new Label();
+    Vapolia.Lib.Ui.Gesture.SetTapCommand(label, new Command(() => { /*your code*/ }));
 
 # Quick start
 
