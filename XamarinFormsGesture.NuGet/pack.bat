@@ -9,7 +9,7 @@
 set nugetServer=https://www.nuget.org/api/v2/package/
 
 del *.nupkg
-set version=3.0.0-pre1
+set version=3.0.0
 nuget pack XamarinFormsGesture.nuspec -Version "%version%"
 nuget push Vapolia.XamarinFormsGesture.*.nupkg -Source %nugetServer%
 
