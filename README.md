@@ -14,7 +14,7 @@ Supports iOS and Android.
 
 Add "advanced" gestures to Xamarin Forms. Available on all views. Usage in XAML:
 
-    <Label Text="Click here" Style="{StaticResource LinkLabel}" IsEnabled="True" ui:Gesture.TapCommand="{Binding OpenLinkCommand}" />
+    <Label Text="Click here" IsEnabled="True" ui:Gesture.TapCommand="{Binding OpenLinkCommand}" />
 
 Or in code:
 
