@@ -8,9 +8,10 @@
     <authors>Benjamin Mayrargue</authors>
     <owners>Vapolia SARL</owners>
     <description>
-      Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your PCL, Android and iOS projects.
+      Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your Netstandard, Android, iOS and UWP projects.
     </description>
     <releaseNotes>
+      3.0.0: netstandard 2.0, xamarin forms 3. UWP requires fall creator update.
       2.0.0: netstandard 1.4, xamarin forms 2.4
       1.1.1: add universal windows implementation
       1.1.0: add pan gesture
@@ -22,13 +23,13 @@
     <iconUrl>https://github.com/softlion/XamarinFormsGesture/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/softlion/XamarinFormsGesture/license</licenseUrl>
-    <copyright>Copyright 2016-2017 vapolia.fr</copyright>
+    <copyright>Copyright 2016-2018 vapolia.fr</copyright>
 
     <dependencies>
       <group>
-        <dependency id="Xamarin.Forms" version="2.4.0" />
+        <dependency id="Xamarin.Forms" version="3.0.0" />
       </group>
-      <group targetFramework="uap10.0">
+      <group targetFramework="uap10.0.16299">
       </group>
     </dependencies>
     <references></references>
@@ -37,18 +38,18 @@
   <files>
     <!-- forms droid -->
     <file src="..\XamarinFormsGesture.Droid\bin\Release\XamarinFormsGesture.Droid.dll" target="lib\MonoAndroid1.0\XamarinFormsGesture.Droid.dll" />
-    <file src="..\XamarinFormsGesture\bin\Release\netstandard1.4\XamarinFormsGesture.dll" target="lib\MonoAndroid1.0\XamarinFormsGesture.dll" />
+    <file src="..\XamarinFormsGesture\bin\Release\netstandard2.0\XamarinFormsGesture.dll" target="lib\MonoAndroid1.0\XamarinFormsGesture.dll" />
 
     <!-- forms ios -->
     <file src="..\XamarinFormsGesture.Ios\bin\Release\XamarinFormsGesture.Ios.dll" target="lib\Xamarin.iOS1.0\XamarinFormsGesture.Ios.dll" />
-    <file src="..\XamarinFormsGesture\bin\Release\netstandard1.4\XamarinFormsGesture.dll" target="lib\Xamarin.iOS1.0\XamarinFormsGesture.dll" />
+    <file src="..\XamarinFormsGesture\bin\Release\netstandard2.0\XamarinFormsGesture.dll" target="lib\Xamarin.iOS1.0\XamarinFormsGesture.dll" />
 
     <!-- forms shared -->
-    <file src="..\XamarinFormsGesture\bin\Release\netstandard1.4\XamarinFormsGesture.dll" target="lib\netstandard1.4\XamarinFormsGesture.dll" />
+    <file src="..\XamarinFormsGesture\bin\Release\netstandard2.0\XamarinFormsGesture.dll" target="lib\netstandard2.0\XamarinFormsGesture.dll" />
 
     <!-- universal (win10) -->
     <file src="..\XamarinFormsGesture.Uw\bin\Release\XamarinFormsGesture.Uw.dll" target="lib\uap10.0\XamarinFormsGesture.Uw.dll" />
     <file src="..\XamarinFormsGesture.Uw\bin\Release\XamarinFormsGesture.Uw.pri" target="lib\uap10.0\XamarinFormsGesture.Uw.pri" />
-    <file src="..\XamarinFormsGesture\bin\Release\netstandard1.4\XamarinFormsGesture.dll" target="lib\uap10.0\XamarinFormsGesture.dll" />
+    <file src="..\XamarinFormsGesture\bin\Release\netstandard2.0\XamarinFormsGesture.dll" target="lib\uap10.0\XamarinFormsGesture.dll" />
   </files>
 </package>
