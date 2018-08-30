@@ -13,48 +13,48 @@ Xamarin Form Gesture Effects
 Supports iOS and Android.
 
 Add "advanced" gestures to Xamarin Forms. Available on all views. Usage in XAML:
-
+```xaml
     <Label Text="Click here" IsEnabled="True" ui:Gesture.TapCommand="{Binding OpenLinkCommand}" />
-
+```
 Or in code:
-
+```csharp
     var label = new Label();
     Vapolia.Lib.Ui.Gesture.SetTapCommand(label, new Command(() => { /*your code*/ }));
-
+```
 # Quick start
 
 Add Gesture.TapCommand on any supported xaml view:
-
+```xaml
         <StackLayout ui:Gesture.TapCommand="{Binding OpenLinkCommand}">
             <Label Text="1.Tap this to open an url"  />
         </StackLayout>
-
+```
 Declare the corresponding namespace:
-
+```xaml
     <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              ...
              xmlns:ui="clr-namespace:Vapolia.Lib.Ui;assembly=XamarinFormsGesture"
     >
-
+```
 And in the viewmodel:
-        
+   ```csharp     
     public Command OpenLinkCommand => new Command(() =>
     {
         //do something
     });
-
+```
 # Doc
 
 Supported Gestures:
 
-    TapCommand (ICommand)
-    TapCommand2 (Command<Point>) where point is the tap position in the view
-    SwipeLeftCommand
-    SwipeRightCommand
-    SwipeTopCommand
-    SwipeBottomCommand
-    PanCommand (Command<Point>) where point is the translation in the view from the start point of the pan gesture
+ *   `TapCommand (ICommand)`
+ *  `TapCommand2 (Command<Point>)` where point is the tap position in the view
+ *  `SwipeLeftCommand`
+ *  `SwipeRightCommand`
+ *  `SwipeTopCommand`
+ *  `SwipeBottomCommand`
+ *  `PanCommand (Command<Point>) `where point is the translation in the view from the start point of the pan gesture
 
 Only commands are supported (PR welcome for events). No .NET events. 
 So you must use the MVVM pattern (https://developer.xamarin.com/guides/xamarin-forms/xaml/xaml-basics/data_bindings_to_mvvm/).
