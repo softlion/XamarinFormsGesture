@@ -13,7 +13,12 @@ namespace DemoApp
         public MainPage()
         {
             InitializeComponent();
+
             BindingContext = new MainPageViewModel(Navigation);
+        }
+
+        private void Gesture_DoubleTapEvent(Point p)
+        {
         }
     }
 
@@ -39,6 +44,14 @@ namespace DemoApp
         });
 
         public Command<Point> PanCommand => new Command<Point>(point =>
+        {
+            PanX = point.X;
+            PanY = point.Y;
+            OnPropertyChanged(nameof(PanX));
+            OnPropertyChanged(nameof(PanY));
+        });
+
+        public Command<Point> OnDoubleTapCommand => new Command<Point>(point =>
         {
             PanX = point.X;
             PanY = point.Y;

@@ -20,6 +20,7 @@ namespace Vapolia.Lib.Ui
     {
         public static readonly BindableProperty TapCommandProperty = BindableProperty.CreateAttached("TapCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty TapCommand2Property = BindableProperty.CreateAttached("TapCommand2", typeof(Command<Point>), typeof(Gesture), null, propertyChanged: CommandChanged);
+        public static readonly BindableProperty DoubleTapCommandProperty = BindableProperty.CreateAttached("DoubleTapCommand", typeof(Command<Point>), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty PanCommandProperty = BindableProperty.CreateAttached("PanCommand", typeof(Command<Point>), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty SwipeLeftCommandProperty = BindableProperty.CreateAttached("SwipeLeftCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty SwipeRightCommandProperty = BindableProperty.CreateAttached("SwipeRightCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
@@ -36,6 +37,11 @@ namespace Vapolia.Lib.Ui
             return (Command<Point>)view.GetValue(TapCommand2Property);
         }
 
+        public static Command<Point> GetDoubleTapCommand(BindableObject view)
+        {
+            return (Command<Point>)view.GetValue(DoubleTapCommandProperty);
+        }
+
         public static void SetTapCommand(BindableObject view, ICommand value)
         {
             view.SetValue(TapCommandProperty, value);
@@ -46,6 +52,10 @@ namespace Vapolia.Lib.Ui
             view.SetValue(TapCommand2Property, value);
         }
 
+        public static void SetDoubleTapCommand(BindableObject view, Command<Point> value)
+        {
+            view.SetValue(DoubleTapCommandProperty, value);
+        }
 
         public static Command<Point> GetPanCommand(BindableObject view)
         {
@@ -116,7 +126,7 @@ namespace Vapolia.Lib.Ui
                 var effect = GetOrCreateEffect(view);
             }
         }
-
+        
         class GestureEffect : RoutingEffect
         {
             public GestureEffect() : base("Vapolia.PlatformGestureEffect")
