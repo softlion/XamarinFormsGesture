@@ -35,21 +35,6 @@ namespace Vapolia.Droid.Lib.Effects
         {
             tapDetector = new InternalGestureDetector
             {
-                DoubleTapAction = motionEvent =>
-                {
-                   
-
-                    var command = doubleTapCommand;
-                    if(command != null)
-                    {
-                        var x = motionEvent.GetX();
-                        var y = motionEvent.GetY();
-
-                        var point = PxToDp(new Point(x, y));
-                        if (command.CanExecute(point))
-                            command.Execute(point);
-                    }
-                },
                 TapAction = motionEvent =>
                 {
                     
@@ -66,6 +51,19 @@ namespace Vapolia.Droid.Lib.Effects
                     var handler = tapCommand;
                     if (handler?.CanExecute(null) == true)
                         handler.Execute(null);
+                },
+                DoubleTapAction = motionEvent =>
+                {
+                    var command = doubleTapCommand;
+                    if (command != null)
+                    {
+                        var x = motionEvent.GetX();
+                        var y = motionEvent.GetY();
+
+                        var point = PxToDp(new Point(x, y));
+                        if (command.CanExecute(point))
+                            command.Execute(point);
+                    }
                 },
                 SwipeLeftAction = motionEvent =>
                 {

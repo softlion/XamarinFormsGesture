@@ -11,6 +11,7 @@
       Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your Netstandard, Android, iOS and UWP projects.
     </description>
     <releaseNotes>
+      3.1.0: xamarin forms 3.6. Double tap command.
       3.0.0: netstandard 2.0, xamarin forms 3. UWP requires fall creator update.
       2.0.0: netstandard 1.4, xamarin forms 2.4
       1.1.1: add universal windows implementation
@@ -27,13 +28,13 @@
 
     <dependencies>
       <group>
-        <dependency id="Xamarin.Forms" version="3.0.0" />
+        <dependency id="Xamarin.Forms" version="3.6.0" />
       </group>
       <group targetFramework="uap10.0.16299">
       </group>
     </dependencies>
     <references></references>
-    <tags>xamarin forms gesture tap swipe</tags>
+    <tags>xamarin forms gesture tap swipe pan tap doubletap</tags>
   </metadata>
   <files>
     <!-- forms droid -->

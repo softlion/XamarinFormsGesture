@@ -19,16 +19,13 @@ namespace Vapolia.Ios.Lib.Effects
 {
     public class PlatformGestureEffect : PlatformEffect
     {
-        private readonly UITapGestureRecognizer tapDetector;
-        private readonly UITapGestureRecognizer doubleTapDetector;
+        private readonly UITapGestureRecognizer tapDetector, doubleTapDetector;
         private readonly UISwipeGestureRecognizer swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector;
         private readonly UIPanGestureRecognizer panDetector;
         private readonly List<UIGestureRecognizer> recognizers;
 
-        private Command<Point> tapCommand2;
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
-        private Command<Point> panCommand;
-        private Command<Point> doubleTapCommand;
+        private Command<Point> tapCommand2, panCommand, doubleTapCommand;
 
         public static void Init()
         {
@@ -42,7 +39,7 @@ namespace Vapolia.Ios.Lib.Effects
             //    tapDetector.ShouldReceiveTouch = (s, args) => true;
 
             tapDetector = CreateTapRecognizer(() => Tuple.Create(tapCommand,tapCommand2));
-            doubleTapDetector = CreateTapRecognizer(() => Tuple.Create(tapCommand, tapCommand2));
+            doubleTapDetector = CreateTapRecognizer(() => Tuple.Create((ICommand)null, doubleTapCommand));
             doubleTapDetector.NumberOfTapsRequired = 2;
 
             swipeLeftDetector = CreateSwipeRecognizer(() => swipeLeftCommand, UISwipeGestureRecognizerDirection.Left);
@@ -54,8 +51,7 @@ namespace Vapolia.Ios.Lib.Effects
 
             recognizers = new List<UIGestureRecognizer>
             {
-                doubleTapDetector,
-                tapDetector,
+                tapDetector, doubleTapDetector,
                 swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector,
                 panDetector
             };

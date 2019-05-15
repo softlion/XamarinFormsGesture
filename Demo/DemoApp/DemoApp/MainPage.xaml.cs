@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace DemoApp
 {
@@ -16,18 +10,15 @@ namespace DemoApp
 
             BindingContext = new MainPageViewModel(Navigation);
         }
-
-        private void Gesture_DoubleTapEvent(Point p)
-        {
-        }
     }
 
     public class MainPageViewModel : BindableObject
     {
         private readonly INavigation navigation;
+        private double panX, panY;
 
-        public double PanX { get; set; }
-        public double PanY { get; set; }
+        public double PanX { get => panX; set { panX = value; OnPropertyChanged(); } }
+        public double PanY { get => panY; set { panY = value; OnPropertyChanged(); } }
 
         public MainPageViewModel(INavigation navigation)
         {
@@ -47,16 +38,13 @@ namespace DemoApp
         {
             PanX = point.X;
             PanY = point.Y;
-            OnPropertyChanged(nameof(PanX));
-            OnPropertyChanged(nameof(PanY));
         });
 
-        public Command<Point> OnDoubleTapCommand => new Command<Point>(point =>
+        public Command<Point> OpenVapolia2Command => new Command<Point>(point =>
         {
             PanX = point.X;
             PanY = point.Y;
-            OnPropertyChanged(nameof(PanX));
-            OnPropertyChanged(nameof(PanY));
+            OpenVapoliaCommand.Execute(null);
         });
     }
 }

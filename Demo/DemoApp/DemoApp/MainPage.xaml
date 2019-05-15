@@ -7,15 +7,19 @@
     xmlns:ui="clr-namespace:Vapolia.Lib.Ui;assembly=XamarinFormsGesture"
     Title="Main Page">
 
-    <StackLayout ui:Gesture.DoubleTapCommand="{Binding OnDoubleTapCommand}" Spacing="10">
+    <StackLayout Spacing="10">
 
         <!--  ios: gestures does not work directly on a forms label  -->
         <StackLayout ui:Gesture.TapCommand="{Binding OpenVapoliaCommand}" IsEnabled="True">
             <Label Text="1.Tap this to open an url" />
         </StackLayout>
 
+        <StackLayout ui:Gesture.DoubleTapCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
+            <Label Text="2.Double tap this to open an url" />
+        </StackLayout>
+
         <StackLayout>
-            <Label Text="2.Drag a finger in this space" />
+            <Label Text="3.Drag a finger in this space" />
             <BoxView
                 ui:Gesture.PanCommand="{Binding PanCommand}"
                 BackgroundColor="Yellow"
