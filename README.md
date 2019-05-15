@@ -2,7 +2,7 @@
 
 # TL;DR
 Add the nuget package https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/
-to ALL your Xamarin Forms projects (ios, android, shared/pcl).
+to ALL your Xamarin Forms projects (ios, android, netstandard).
 
 In your Android/ios projects, before initializing xamarin forms, call PlatformGestureEffect.Init() to force the discovery of the gestures by the Xamarin Forms plugin engine.
 
