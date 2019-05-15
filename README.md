@@ -1,8 +1,9 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/8t8m8n0do3p0304n?svg=true)](https://ci.appveyor.com/project/softlion/xamarinformsgesture)
 
-# TL;DR
-Add the nuget package https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/
-to ALL your Xamarin Forms projects (ios, android, shared/pcl).
+[![NuGet](https://img.shields.io/nuget/v/Vapolia.XamarinFormsGesture.svg?style=for-the-badge)](https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/)
+
+# Quick start
+Add the above nuget package to ALL your Xamarin Forms projects (ios, android, netstandard).
 
 In your Android/ios projects, before initializing xamarin forms, call PlatformGestureEffect.Init() to force the discovery of the gestures by the Xamarin Forms plugin engine.
 
@@ -21,7 +22,7 @@ Or in code:
     var label = new Label();
     Vapolia.Lib.Ui.Gesture.SetTapCommand(label, new Command(() => { /*your code*/ }));
 ```
-# Quick start
+# Examples
 
 Add Gesture.TapCommand on any supported xaml view:
 ```xaml
@@ -50,6 +51,7 @@ Supported Gestures:
 
  *   `TapCommand (ICommand)`
  *  `TapCommand2 (Command<Point>)` where point is the tap position in the view
+ *  `DoubleTapCommand (Command<Point>)` where point is the double tap position in the view
  *  `SwipeLeftCommand`
  *  `SwipeRightCommand`
  *  `SwipeTopCommand`

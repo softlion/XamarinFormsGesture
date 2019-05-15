@@ -11,13 +11,16 @@ using Windows.UI.Xaml.Input;
 using Vapolia.Uw.Lib.Effects;
 using Vapolia.Lib.Ui;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.UWP;
 
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
+[assembly: LinkerSafe]
 
 namespace Vapolia.Uw.Lib.Effects
 {
+    [Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
         private Windows.UI.Input.GestureRecognizer detector;

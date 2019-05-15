@@ -10,13 +10,17 @@ using UIKit;
 using Vapolia.Ios.Lib.Effects;
 using Vapolia.Lib.Ui;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
+[assembly: LinkerSafe]
 
 namespace Vapolia.Ios.Lib.Effects
 {
+
+    [Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
         private readonly UITapGestureRecognizer tapDetector, doubleTapDetector;

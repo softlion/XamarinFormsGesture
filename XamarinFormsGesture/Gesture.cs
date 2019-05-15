@@ -3,8 +3,10 @@
 // Usage licence automatically acquired by Vapolia's customers when added to their product's source code under a contract signed with Vapolia.
 
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace Vapolia.Lib.Ui
 {
@@ -16,6 +18,7 @@ namespace Vapolia.Lib.Ui
     ///      ...
     ///   &lt;/Grid&gt;
     /// </example>
+    [Preserve (Conditional=true, AllMembers = true)]
     public static class Gesture
     {
         public static readonly BindableProperty TapCommandProperty = BindableProperty.CreateAttached("TapCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
@@ -120,11 +123,8 @@ namespace Vapolia.Lib.Ui
 
         private static void CommandChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            var view = bindable as View;
-            if (view != null)
-            {
-                var effect = GetOrCreateEffect(view);
-            }
+            if (bindable is View view)
+                GetOrCreateEffect(view);
         }
         
         class GestureEffect : RoutingEffect
