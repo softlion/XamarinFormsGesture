@@ -11,14 +11,17 @@ using Android.Views;
 using Vapolia.Droid.Lib.Effects;
 using Vapolia.Lib.Ui;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 using View = Android.Views.View;
 
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
+[assembly: LinkerSafe]
 
 namespace Vapolia.Droid.Lib.Effects
 {
+    [Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
         private GestureDetectorCompat gestureRecognizer;
@@ -129,6 +132,7 @@ namespace Vapolia.Droid.Lib.Effects
         private void ControlOnTouch(object sender, View.TouchEventArgs touchEventArgs)
         {
             gestureRecognizer?.OnTouchEvent(touchEventArgs.Event);
+            touchEventArgs.Handled = false;
         }
 
         protected override void OnDetached()
@@ -136,7 +140,6 @@ namespace Vapolia.Droid.Lib.Effects
             var control = Control ?? Container;
             control.Touch -= ControlOnTouch;
         }
-
 
         sealed class InternalGestureDetector : GestureDetector.SimpleOnGestureListener
         {
@@ -184,38 +187,5 @@ namespace Vapolia.Droid.Lib.Effects
                 return true;
             }
         }
-
-
-        //sealed class GestureDetector : Java.Lang.Object, Android.Views.GestureDetector.IOnGestureListener
-        //{
-        //    const int SWIPING_THRESHOLD = 20;
-        //    const int SWIPED_THRESHOLD = 100;
-
-        //    public event 
-
-        //    public bool OnDown(MotionEvent e)
-        //    {
-        //    }
-
-        //    public bool OnFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-        //    {
-        //    }
-
-        //    public void OnLongPress(MotionEvent e)
-        //    {
-        //    }
-
-        //    public bool OnScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
-        //    {
-        //    }
-
-        //    public void OnShowPress(MotionEvent e)
-        //    {
-        //    }
-
-        //    public bool OnSingleTapUp(MotionEvent e)
-        //    {
-        //    }
-        //}
     }
 }
