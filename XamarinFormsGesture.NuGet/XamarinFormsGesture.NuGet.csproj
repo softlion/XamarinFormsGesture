@@ -48,7 +48,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <None Include="pack.bat" />
+    <None Include="pack.ps1" />
     <None Include="XamarinFormsGesture.nuspec" />
     <None Include="tools\init.ps1" />
     <None Include="tools\install.ps1" />

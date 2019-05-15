@@ -26,7 +26,7 @@ namespace Vapolia.Uw.Lib.Effects
         private Windows.UI.Input.GestureRecognizer detector;
         private Command<Point> tapCommand2;
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
-        private Command<Point> panCommand;
+        private Command<Point> panCommand, doubleTapCommand;
 
         public static void Init()
         {
@@ -36,7 +36,7 @@ namespace Vapolia.Uw.Lib.Effects
         {
             detector = new Windows.UI.Input.GestureRecognizer
             {
-                GestureSettings = GestureSettings.Tap | GestureSettings.Drag | GestureSettings.ManipulationTranslateInertia,
+                GestureSettings = GestureSettings.Tap | GestureSettings.Drag | GestureSettings.ManipulationTranslateInertia | GestureSettings.DoubleTap,
                 ShowGestureFeedback = false,
                 //CrossSlideHorizontally = true
             };
@@ -45,8 +45,13 @@ namespace Vapolia.Uw.Lib.Effects
 
             detector.Tapped += (sender, args) =>
             {
-                TriggerCommand(tapCommand, null);
-                TriggerCommand(tapCommand2, new Point(args.Position.X, args.Position.Y));
+                if (args.TapCount == 1)
+                {
+                    TriggerCommand(tapCommand, null);
+                    TriggerCommand(tapCommand2, new Point(args.Position.X, args.Position.Y));
+                }
+                else if (args.TapCount == 2)
+                    TriggerCommand(doubleTapCommand, new Point(args.Position.X, args.Position.Y));
             };
 
             detector.ManipulationInertiaStarting += (sender, args) =>
@@ -84,6 +89,7 @@ namespace Vapolia.Uw.Lib.Effects
         {
             tapCommand = Gesture.GetTapCommand(Element);
             tapCommand2 = Gesture.GetTapCommand2(Element);
+            doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
             swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);

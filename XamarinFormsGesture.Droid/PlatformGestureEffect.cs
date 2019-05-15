@@ -26,7 +26,7 @@ namespace Vapolia.Droid.Lib.Effects
     {
         private GestureDetectorCompat gestureRecognizer;
         private readonly InternalGestureDetector tapDetector;
-        private Command<Point> tapCommand2, panCommand;
+        private Command<Point> tapCommand2, panCommand,doubleTapCommand;
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
         private DisplayMetrics displayMetrics;
 
@@ -40,6 +40,7 @@ namespace Vapolia.Droid.Lib.Effects
             {
                 TapAction = motionEvent =>
                 {
+                    
                     var command = tapCommand2;
                     if (command != null)
                     {
@@ -53,6 +54,19 @@ namespace Vapolia.Droid.Lib.Effects
                     var handler = tapCommand;
                     if (handler?.CanExecute(null) == true)
                         handler.Execute(null);
+                },
+                DoubleTapAction = motionEvent =>
+                {
+                    var command = doubleTapCommand;
+                    if (command != null)
+                    {
+                        var x = motionEvent.GetX();
+                        var y = motionEvent.GetY();
+
+                        var point = PxToDp(new Point(x, y));
+                        if (command.CanExecute(point))
+                            command.Execute(point);
+                    }
                 },
                 SwipeLeftAction = motionEvent =>
                 {
@@ -112,6 +126,7 @@ namespace Vapolia.Droid.Lib.Effects
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
+            doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
         }
 
         protected override void OnAttached()
@@ -146,6 +161,7 @@ namespace Vapolia.Droid.Lib.Effects
             private const int SwipeThresholdInPoints = 40;
 
             public Action<MotionEvent> TapAction { get; set; }
+            public Action<MotionEvent> DoubleTapAction { get; set; }
             public Action<MotionEvent> SwipeLeftAction { get; set; }
             public Action<MotionEvent> SwipeRightAction { get; set; }
             public Action<MotionEvent> SwipeTopAction { get; set; }
@@ -153,6 +169,13 @@ namespace Vapolia.Droid.Lib.Effects
             public Action<MotionEvent, MotionEvent> PanAction { get; set; }
 
             public float Density { get; set; }
+
+            public override bool OnDoubleTap(MotionEvent e)
+            {
+                DoubleTapAction?.Invoke(e);
+                return true;
+            }
+
 
             public override bool OnSingleTapUp(MotionEvent e)
             {

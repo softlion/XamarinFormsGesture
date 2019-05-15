@@ -1,28 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:DemoApp"
-             xmlns:ui="clr-namespace:Vapolia.Lib.Ui;assembly=XamarinFormsGesture"
-             x:Class="DemoApp.MainPage"
-             Title="Main Page">
+<ContentPage
+    x:Class="DemoApp.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:DemoApp"
+    xmlns:ui="clr-namespace:Vapolia.Lib.Ui;assembly=XamarinFormsGesture"
+    Title="Main Page">
 
     <StackLayout Spacing="10">
-        
-        <!-- ios: gestures does not work directly on a forms label -->
+
+        <!--  ios: gestures does not work directly on a forms label  -->
         <StackLayout ui:Gesture.TapCommand="{Binding OpenVapoliaCommand}" IsEnabled="True">
-            <Label Text="1.Tap this to open an url"  />
+            <Label Text="1.Tap this to open an url" />
+        </StackLayout>
+
+        <StackLayout ui:Gesture.DoubleTapCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
+            <Label Text="2.Double tap this to open an url" />
         </StackLayout>
 
         <StackLayout>
-            <Label Text="2.Drag a finger in this space"  />
-            <BoxView WidthRequest="300" HeightRequest="200" ui:Gesture.PanCommand="{Binding PanCommand}" IsEnabled="True" InputTransparent="False" BackgroundColor="Yellow" />
+            <Label Text="3.Drag a finger in this space" />
+            <BoxView
+                ui:Gesture.PanCommand="{Binding PanCommand}"
+                BackgroundColor="Yellow"
+                HeightRequest="200"
+                InputTransparent="False"
+                IsEnabled="True"
+                WidthRequest="300" />
             <StackLayout>
                 <StackLayout Orientation="Horizontal">
-                    <Label Text="dX:"/>
+                    <Label Text="dX:" />
                     <Label Text="{Binding PanX}" />
                 </StackLayout>
                 <StackLayout Orientation="Horizontal">
-                    <Label Text="dY:"/>
+                    <Label Text="dY:" />
                     <Label Text="{Binding PanY}" />
                 </StackLayout>
             </StackLayout>
