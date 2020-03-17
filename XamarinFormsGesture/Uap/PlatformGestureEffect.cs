@@ -1,10 +1,5 @@
-// Do not remove this notice
-// Copyright (c)2016 Vapolia. All rights reserved.
-// Usage licence automatically acquired by Vapolia's customers when added to their product's source code under a contract signed with Vapolia.
-
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
@@ -16,17 +11,16 @@ using Xamarin.Forms.Platform.UWP;
 
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
-[assembly: LinkerSafe]
 
 namespace Vapolia.Uw.Lib.Effects
 {
     [Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
-        private Windows.UI.Input.GestureRecognizer detector;
-        private Command<Point> tapCommand2;
-        private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
-        private Command<Point> panCommand, doubleTapCommand;
+        readonly Windows.UI.Input.GestureRecognizer detector;
+        Command<Point> tapCommand2, panCommand, doubleTapCommand, longPressCommand;
+        ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        int swipeThresholdInPoints = 40;
 
         public static void Init()
         {
@@ -36,7 +30,13 @@ namespace Vapolia.Uw.Lib.Effects
         {
             detector = new Windows.UI.Input.GestureRecognizer
             {
-                GestureSettings = GestureSettings.Tap | GestureSettings.Drag | GestureSettings.ManipulationTranslateInertia | GestureSettings.DoubleTap,
+                GestureSettings = 
+                    GestureSettings.Tap 
+                    | GestureSettings.Drag 
+                    | GestureSettings.ManipulationTranslateInertia 
+                    | GestureSettings.DoubleTap
+                    | GestureSettings.Hold
+                    | GestureSettings.HoldWithMouse,
                 ShowGestureFeedback = false,
                 //CrossSlideHorizontally = true
             };
@@ -54,10 +54,17 @@ namespace Vapolia.Uw.Lib.Effects
                     TriggerCommand(doubleTapCommand, new Point(args.Position.X, args.Position.Y));
             };
 
+            detector.Holding += (sender, args) =>
+            {
+                if(args.HoldingState == HoldingState.Started)
+                    TriggerCommand(longPressCommand, new Point(args.Position.X, args.Position.Y));
+            };
+
+            //Never called. Don't know why.
             detector.ManipulationInertiaStarting += (sender, args) =>
             {
-                var isHorizontalSwipe = Math.Abs(args.Delta.Translation.Y) < 20;
-                var isVerticalSwipe = Math.Abs(args.Delta.Translation.X) < 20;
+                var isHorizontalSwipe = Math.Abs(args.Delta.Translation.Y) < swipeThresholdInPoints;
+                var isVerticalSwipe = Math.Abs(args.Delta.Translation.X) < swipeThresholdInPoints;
                 if (isHorizontalSwipe || isVerticalSwipe)
                 {
                     if (isHorizontalSwipe)
@@ -90,11 +97,15 @@ namespace Vapolia.Uw.Lib.Effects
             tapCommand = Gesture.GetTapCommand(Element);
             tapCommand2 = Gesture.GetTapCommand2(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
+            longPressCommand = Gesture.GetLongPressCommand(Element);
+
             swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
+
+            swipeThresholdInPoints = Gesture.GetSwipeThreshold(Element);
         }
 
         protected override void OnAttached()
@@ -135,10 +146,10 @@ namespace Vapolia.Uw.Lib.Effects
             pointerRoutedEventArgs.Handled = true;
         }
 
-        private void ControlOnPointerCanceled(object sender, PointerRoutedEventArgs pointerRoutedEventArgs)
+        private void ControlOnPointerCanceled(object sender, PointerRoutedEventArgs args)
         {
             detector.CompleteGesture();
-            pointerRoutedEventArgs.Handled = true;
+            args.Handled = true;
         }
 
         private void ControlOnPointerReleased(object sender, PointerRoutedEventArgs pointerRoutedEventArgs)

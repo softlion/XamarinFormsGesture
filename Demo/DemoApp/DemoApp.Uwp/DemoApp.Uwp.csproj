@@ -11,8 +11,8 @@
     <AssemblyName>DemoApp.Uwp</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
@@ -125,9 +125,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\XamarinFormsGesture.Uw\XamarinFormsGesture.Uw.csproj">
-      <Project>{82dd2f40-35b2-4dec-a8c6-7d6b5b432886}</Project>
-      <Name>XamarinFormsGesture.Uw</Name>
+    <ProjectReference Include="..\..\..\XamarinFormsGesture\XamarinFormsGesture.csproj">
+      <Project>{ba6bb0ee-4ad6-4d3a-a08c-709f1bed1222}</Project>
+      <Name>XamarinFormsGesture</Name>
     </ProjectReference>
     <ProjectReference Include="..\DemoApp\DemoApp.csproj">
       <Project>{1236224c-680d-4250-a283-7df3025f455b}</Project>
@@ -136,10 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.8</Version>
-    </PackageReference>
-    <PackageReference Include="Xamarin.Forms">
-      <Version>3.6.0.344457</Version>
+      <Version>6.2.9</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

@@ -1,11 +1,6 @@
-// Do not remove this notice
-// Copyright (c)2016 Vapolia. All rights reserved.
-// Usage licence automatically acquired by Vapolia's customers when added to their product's source code under a contract signed with Vapolia.
-
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
-using Android.Support.V4.View;
 using Android.Util;
 using Android.Views;
 using Vapolia.Droid.Lib.Effects;
@@ -15,9 +10,14 @@ using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 using View = Android.Views.View;
 
+#if MONOANDROID90
+using Android.Support.V4.View;
+#else
+using AndroidX.Core.View;
+#endif
+
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
-[assembly: LinkerSafe]
 
 namespace Vapolia.Droid.Lib.Effects
 {
@@ -26,7 +26,7 @@ namespace Vapolia.Droid.Lib.Effects
     {
         private GestureDetectorCompat gestureRecognizer;
         private readonly InternalGestureDetector tapDetector;
-        private Command<Point> tapCommand2, panCommand,doubleTapCommand;
+        private Command<Point> tapCommand2, panCommand, doubleTapCommand, longPressCommand;
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
         private DisplayMetrics displayMetrics;
 
@@ -38,6 +38,7 @@ namespace Vapolia.Droid.Lib.Effects
         {
             tapDetector = new InternalGestureDetector
             {
+                SwipeThresholdInPoints = 40,
                 TapAction = motionEvent =>
                 {
                     
@@ -107,6 +108,19 @@ namespace Vapolia.Droid.Lib.Effects
                             command.Execute(point);
                     }
                 },
+                LongPressAction = motionEvent =>
+                {
+                    var command = longPressCommand;
+                    if (command != null)
+                    {
+                        var x = motionEvent.GetX();
+                        var y = motionEvent.GetY();
+
+                        var point = PxToDp(new Point(x, y));
+                        if (command.CanExecute(point))
+                            command.Execute(point);
+                    }
+                },
             };
         }
 
@@ -121,12 +135,16 @@ namespace Vapolia.Droid.Lib.Effects
         {
             tapCommand = Gesture.GetTapCommand(Element);
             tapCommand2 = Gesture.GetTapCommand2(Element);
+            doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
+            longPressCommand = Gesture.GetLongPressCommand(Element);
+
             swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
-            doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
+
+            tapDetector.SwipeThresholdInPoints = Gesture.GetSwipeThreshold(Element);
         }
 
         protected override void OnAttached()
@@ -140,6 +158,7 @@ namespace Vapolia.Droid.Lib.Effects
             if (gestureRecognizer == null)
                 gestureRecognizer = new GestureDetectorCompat(context, tapDetector);
             control.Touch += ControlOnTouch;
+            control.Clickable = true;
 
             OnElementPropertyChanged(new PropertyChangedEventArgs(String.Empty));
         }
@@ -154,11 +173,16 @@ namespace Vapolia.Droid.Lib.Effects
         {
             var control = Control ?? Container;
             control.Touch -= ControlOnTouch;
+
+            var g = gestureRecognizer;
+            gestureRecognizer = null;
+            g?.Dispose();
+            displayMetrics = null;
         }
 
         sealed class InternalGestureDetector : GestureDetector.SimpleOnGestureListener
         {
-            private const int SwipeThresholdInPoints = 40;
+            public int SwipeThresholdInPoints { get; set; }
 
             public Action<MotionEvent> TapAction { get; set; }
             public Action<MotionEvent> DoubleTapAction { get; set; }
@@ -167,6 +191,7 @@ namespace Vapolia.Droid.Lib.Effects
             public Action<MotionEvent> SwipeTopAction { get; set; }
             public Action<MotionEvent> SwipeBottomAction { get; set; }
             public Action<MotionEvent, MotionEvent> PanAction { get; set; }
+            public Action<MotionEvent> LongPressAction { get; set; }
 
             public float Density { get; set; }
 
@@ -181,6 +206,11 @@ namespace Vapolia.Droid.Lib.Effects
             {
                 TapAction?.Invoke(e);
                 return true;
+            }
+
+            public override void OnLongPress(MotionEvent e)
+            {
+                LongPressAction?.Invoke(e);
             }
 
             public override bool OnScroll(MotionEvent initialDown, MotionEvent currentMove, float distanceX, float distanceY)

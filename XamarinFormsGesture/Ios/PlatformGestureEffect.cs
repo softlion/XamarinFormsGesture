@@ -1,7 +1,3 @@
-// Do not remove this notice
-// Copyright (c)2016 Vapolia. All rights reserved.
-// Usage licence automatically acquired by Vapolia's customers when added to their product's source code under a contract signed with Vapolia.
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +11,6 @@ using Xamarin.Forms.Platform.iOS;
 
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
-[assembly: LinkerSafe]
 
 namespace Vapolia.Ios.Lib.Effects
 {
@@ -24,12 +19,13 @@ namespace Vapolia.Ios.Lib.Effects
     public class PlatformGestureEffect : PlatformEffect
     {
         private readonly UITapGestureRecognizer tapDetector, doubleTapDetector;
+        private readonly UILongPressGestureRecognizer longPressDetector;
         private readonly UISwipeGestureRecognizer swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector;
         private readonly UIPanGestureRecognizer panDetector;
         private readonly List<UIGestureRecognizer> recognizers;
 
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
-        private Command<Point> tapCommand2, panCommand, doubleTapCommand;
+        private Command<Point> tapCommand2, panCommand, doubleTapCommand, longPressCommand;
 
         public static void Init()
         {
@@ -45,6 +41,7 @@ namespace Vapolia.Ios.Lib.Effects
             tapDetector = CreateTapRecognizer(() => Tuple.Create(tapCommand,tapCommand2));
             doubleTapDetector = CreateTapRecognizer(() => Tuple.Create((ICommand)null, doubleTapCommand));
             doubleTapDetector.NumberOfTapsRequired = 2;
+            longPressDetector = CreateLongPressRecognizer(() => Tuple.Create((ICommand)null, longPressCommand));
 
             swipeLeftDetector = CreateSwipeRecognizer(() => swipeLeftCommand, UISwipeGestureRecognizerDirection.Left);
             swipeRightDetector = CreateSwipeRecognizer(() => swipeRightCommand, UISwipeGestureRecognizerDirection.Right);
@@ -55,7 +52,7 @@ namespace Vapolia.Ios.Lib.Effects
 
             recognizers = new List<UIGestureRecognizer>
             {
-                tapDetector, doubleTapDetector,
+                tapDetector, doubleTapDetector, longPressDetector,
                 swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector,
                 panDetector
             };
@@ -83,6 +80,33 @@ namespace Vapolia.Ios.Lib.Effects
                 //ShouldReceiveTouch = (recognizer, touch) => true,
             };
         }
+
+        private UILongPressGestureRecognizer CreateLongPressRecognizer(Func<Tuple<ICommand, Command<Point>>> getCommand)
+        {
+            return new UILongPressGestureRecognizer(recognizer =>
+            {
+                if (recognizer.State == UIGestureRecognizerState.Began)
+                {
+                    var handler = getCommand();
+                    if (handler != null)
+                    {
+                        var control = Control ?? Container;
+                        var point = recognizer.LocationInView(control);
+                        var pt = new Point(point.X, point.Y);
+                        if (handler.Item2?.CanExecute(pt) == true)
+                            handler.Item2.Execute(pt);
+                        if (handler.Item1?.CanExecute(null) == true)
+                            handler.Item1.Execute(null);
+                    }
+                }
+            })
+            {
+                Enabled = false,
+                ShouldRecognizeSimultaneously = (recognizer, gestureRecognizer) => true,
+                //ShouldReceiveTouch = (recognizer, touch) => true,
+            };
+        }
+
 
         private UISwipeGestureRecognizer CreateSwipeRecognizer(Func<ICommand> getCommand, UISwipeGestureRecognizerDirection direction)
         {
@@ -125,6 +149,7 @@ namespace Vapolia.Ios.Lib.Effects
             tapCommand = Gesture.GetTapCommand(Element);
             tapCommand2 = Gesture.GetTapCommand2(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
+            longPressCommand = Gesture.GetLongPressCommand(Element);
 
             swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);

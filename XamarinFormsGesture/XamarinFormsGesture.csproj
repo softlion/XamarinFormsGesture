@@ -1,11 +1,66 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;Xamarin.iOS10;MonoAndroid90;MonoAndroid10.0;</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);uap10.0.17763;</TargetFrameworks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="3.6.0.344457" />
+      <PackageReference Include="Xamarin.Forms" Version="4.5.0.356" />
+      <Compile Include="Shared\**\*.cs" />
+      <None Include="..\\LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
+    <Compile Include="Android\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
+    <Compile Include="Ios\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) ">
+      <Compile Include="Uap\**\*.cs" />
+  </ItemGroup>
+
+
+  <!--  nuget configurable properties -->
+  <PropertyGroup>
+    <Version>0.0.0-pre1</Version>
+    <VersionSuffix></VersionSuffix>
+    <DefineConstants>$(DefineConstants);</DefineConstants>
+    <NugetPackageId></NugetPackageId>
+  </PropertyGroup>
+
+  <!--  nuget properties -->
+  <PropertyGroup>
+    <PackageId>Vapolia.XamarinFormsGesture</PackageId>
+    <PackageIconUrl>https://github.com/softlion/XamarinFormsGesture/favicon.ico</PackageIconUrl>
+    <Summary>Bring all gestures to Xamarin Forms (iOS, Android, UWP)</Summary>
+    <PackageTags>xamarin forms, gesture, tap, swipe, pan, doubletap, xamarin, ios, android, uwp</PackageTags>
+    <Title>Gestures support for Xamarin.Forms (ios, android, UWP)</Title>
+    <Description>Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your Netstandard, Android, iOS and UWP projects.</Description>
+    <Product>$(AssemblyName) ($(TargetFramework))</Product>
+    <VersionSuffix></VersionSuffix>
+    <PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
+    <Authors>Benjamin Mayrargue</Authors>
+    <Owners>Benjamin Mayrargue</Owners>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Copyright>© 2016-2020 Benjamin Mayrargue</Copyright>
+    <RepositoryUrl>https://github.com/softlion/XamarinFormsGesture</RepositoryUrl>
+    <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://vapolia.eu</PackageProjectUrl>
+    <PackageReleaseNotes>
+      3.2.0: xamarin forms 4. Switch to a multi targeting project.
+      3.1.0: xamarin forms 3.6. Double tap command.
+      3.0.0: netstandard 2.0, xamarin forms 3. UWP requires fall creator update.
+      2.0.0: netstandard 1.4, xamarin forms 2.4
+      1.1.1: add universal windows implementation
+      1.1.0: add pan gesture
+      1.0.1: fix ios version for XamForms DependencyService (changed internal to public in class definition)
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
 
 </Project>
