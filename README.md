@@ -2,6 +2,10 @@
 
 [![NuGet](https://img.shields.io/nuget/v/Vapolia.XamarinFormsGesture.svg?style=for-the-badge)](https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/)
 
+# Supported Platforms
+
+iOS, Android, UWP
+
 # Quick start
 Add the above nuget package to ALL your Xamarin Forms projects (ios, android, netstandard).
 
@@ -11,7 +15,6 @@ The elements on which the gesture is applied must have the property **IsEnabled=
 
 # XamarinFormsGesture
 Xamarin Form Gesture Effects  
-Supports iOS and Android.
 
 Add "advanced" gestures to Xamarin Forms. Available on all views. Usage in XAML:
 ```xaml
@@ -57,6 +60,9 @@ Supported Gestures:
  *  `SwipeTopCommand`
  *  `SwipeBottomCommand`
  *  `PanCommand (Command<Point>) `where point is the translation in the view from the start point of the pan gesture
+ *  `LongPressCommand (Command<Point>) ` where point is the tap position in the view
+
+Note: swipe commands are not supported on UWP due to a bug (event not received). If you find it, notify me!
 
 Only commands are supported (PR welcome for events). No .NET events. 
 So you must use the MVVM pattern (https://developer.xamarin.com/guides/xamarin-forms/xaml/xaml-basics/data_bindings_to_mvvm/).
