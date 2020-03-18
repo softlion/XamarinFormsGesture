@@ -6,17 +6,11 @@
 
 iOS, Android, UWP
 
-# Quick start
-Add the above nuget package to ALL your Xamarin Forms projects (ios, android, netstandard).
+# Xamarin Form Gesture Effects
 
-In your Android/ios projects, before initializing xamarin forms, call PlatformGestureEffect.Init() to force the discovery of the gestures by the Xamarin Forms plugin engine.
+Add "advanced" gestures to Xamarin Forms. Available on all views.
+Most gesture commands include the event position.
 
-The elements on which the gesture is applied must have the property **IsEnabled="True"** and **InputTransparent="True"** which activates user interaction on them.
-
-# XamarinFormsGesture
-Xamarin Form Gesture Effects  
-
-Add "advanced" gestures to Xamarin Forms. Available on all views. Usage in XAML:
 ```xaml
     <Label Text="Click here" IsEnabled="True" ui:Gesture.TapCommand="{Binding OpenLinkCommand}" />
 ```
@@ -25,6 +19,14 @@ Or in code:
     var label = new Label();
     Vapolia.Lib.Ui.Gesture.SetTapCommand(label, new Command(() => { /*your code*/ }));
 ```
+
+# Quick start
+Add the above nuget package to your Xamarin Forms project (only the netstandard one is enough).
+
+In your platform projects (android,ios,uwp), before initializing xamarin forms, call `PlatformGestureEffect.Init()` to force the discovery of this extension by the Xamarin Forms plugin engine.
+
+The views on which the gesture is applied should have the property **IsEnabled="True"** and **InputTransparent="False"** which activates user interaction on them.
+
 # Examples
 
 Add Gesture.TapCommand on any supported xaml view:
@@ -48,11 +50,9 @@ And in the viewmodel:
         //do something
     });
 ```
-# Doc
+# Supported Gestures
 
-Supported Gestures:
-
- *   `TapCommand (ICommand)`
+ *  `TapCommand (ICommand)`
  *  `TapCommand2 (Command<Point>)` where point is the tap position in the view
  *  `DoubleTapCommand (Command<Point>)` where point is the double tap position in the view
  *  `SwipeLeftCommand`
@@ -62,7 +62,13 @@ Supported Gestures:
  *  `PanCommand (Command<Point>) `where point is the translation in the view from the start point of the pan gesture
  *  `LongPressCommand (Command<Point>) ` where point is the tap position in the view
 
-Note: swipe commands are not supported on UWP due to a bug (event not received). If you find it, notify me!
+# Limitations
 
 Only commands are supported (PR welcome for events). No .NET events. 
 So you must use the MVVM pattern (https://developer.xamarin.com/guides/xamarin-forms/xaml/xaml-basics/data_bindings_to_mvvm/).
+
+Swipe commands are not supported on UWP due to a bug (event not received). If you find it, notify me!
+
+If your command is not receiving events, make sure that:
+- you used the correct handler. Ie: the LongPressCommand must be `new Command<Point>(pt => ...)` and won't work with `new Command(() => ...)`.
+- you set IsEnabled="True" and InputTransparent="False" on the element
