@@ -20,4 +20,4 @@ if ($lastexitcode -ne 0) { exit $lastexitcode; }
 
 ####################
 # PUSH
-nuget push "Vapolia.XamarinFormsGesture.$nugetVersion.nupkg"
+dotnet nuget push "Vapolia.XamarinFormsGesture.$nugetVersion.nupkg"
