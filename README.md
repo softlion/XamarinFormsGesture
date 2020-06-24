@@ -72,3 +72,5 @@ Swipe commands are not supported on UWP due to a bug (event not received). If yo
 If your command is not receiving events, make sure that:
 - you used the correct handler. Ie: the LongPressCommand must be `new Command<Point>(pt => ...)` and won't work with `new Command(() => ...)`.
 - you set IsEnabled="True" and InputTransparent="False" on the element
+
+UWP requires fall creator update
