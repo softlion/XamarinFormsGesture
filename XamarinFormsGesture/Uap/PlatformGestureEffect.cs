@@ -45,7 +45,7 @@ namespace Vapolia.Uw.Lib.Effects
             detector.Dragging += (sender, args) {
                 TriggerCommand(panCommand, commandParameter);
                 TriggerCommand(panPointCommand, new Point(args.Position.X, args.Position.Y));
-            }
+            };
 
             detector.Tapped += (sender, args) =>
             {
