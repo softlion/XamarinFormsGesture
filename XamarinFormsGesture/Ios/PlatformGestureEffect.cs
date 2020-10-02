@@ -24,8 +24,9 @@ namespace Vapolia.Ios.Lib.Effects
         private readonly UIPanGestureRecognizer panDetector;
         private readonly List<UIGestureRecognizer> recognizers;
 
-        private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
-        private Command<Point> tapPointCommand, panCommand, doubleTapCommand, longPressCommand;
+        private Command<Point> tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
+        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        private object commandParameter;
 
         public static void Init()
         {
@@ -39,22 +40,21 @@ namespace Vapolia.Ios.Lib.Effects
             //    tapDetector.ShouldReceiveTouch = (s, args) => true;
 
             tapDetector = CreateTapRecognizer(() => Tuple.Create(tapCommand,tapPointCommand));
-            doubleTapDetector = CreateTapRecognizer(() => Tuple.Create((ICommand)null, doubleTapCommand));
+            doubleTapDetector = CreateTapRecognizer(() => Tuple.Create(doubleTapCommand, doubleTapPointCommand));
             doubleTapDetector.NumberOfTapsRequired = 2;
-            longPressDetector = CreateLongPressRecognizer(() => Tuple.Create((ICommand)null, longPressCommand));
+            longPressDetector = CreateLongPressRecognizer(() => Tuple.Create(longPressCommand, longPressPointCommand));
+            panDetector = CreatePanRecognizer(() => Tuple.Create(panCommand, panPointCommand));
 
             swipeLeftDetector = CreateSwipeRecognizer(() => swipeLeftCommand, UISwipeGestureRecognizerDirection.Left);
             swipeRightDetector = CreateSwipeRecognizer(() => swipeRightCommand, UISwipeGestureRecognizerDirection.Right);
             swipeUpDetector = CreateSwipeRecognizer(() => swipeTopCommand, UISwipeGestureRecognizerDirection.Up);
             swipeDownDetector = CreateSwipeRecognizer(() => swipeBottomCommand, UISwipeGestureRecognizerDirection.Down);
 
-            panDetector = CreatePanRecognizer(() => panCommand);
 
             recognizers = new List<UIGestureRecognizer>
             {
-                tapDetector, doubleTapDetector, longPressDetector,
-                swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector,
-                panDetector
+                tapDetector, doubleTapDetector, longPressDetector, panDetector,
+                swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector
             };
         }
 
@@ -70,8 +70,8 @@ namespace Vapolia.Ios.Lib.Effects
                     var pt = new Point(point.X, point.Y);
                     if (handler.Item2?.CanExecute(pt) == true)
                         handler.Item2.Execute(pt);
-                    if(handler.Item1?.CanExecute(null) == true)
-                        handler.Item1.Execute(null);
+                    if(handler.Item1?.CanExecute(commandParameter) == true)
+                        handler.Item1.Execute(commandParameter);
                 }
             })
             {
@@ -95,8 +95,8 @@ namespace Vapolia.Ios.Lib.Effects
                         var pt = new Point(point.X, point.Y);
                         if (handler.Item2?.CanExecute(pt) == true)
                             handler.Item2.Execute(pt);
-                        if (handler.Item1?.CanExecute(null) == true)
-                            handler.Item1.Execute(null);
+                        if (handler.Item1?.CanExecute(commandParameter) == true)
+                            handler.Item1.Execute(commandParameter);
                     }
                 }
             })
@@ -113,8 +113,8 @@ namespace Vapolia.Ios.Lib.Effects
             return new UISwipeGestureRecognizer(() =>
             {
                 var handler = getCommand();
-                if (handler?.CanExecute(null) == true)
-                    handler.Execute(null);
+                if (handler?.CanExecute(commandParameter) == true)
+                    handler.Execute(commandParameter);
             })
             {
                 Enabled = false,
@@ -123,7 +123,7 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UIPanGestureRecognizer CreatePanRecognizer(Func<Command<Point>> getCommand)
+        private UIPanGestureRecognizer CreatePanRecognizer(Func<Tuple<ICommand, Command<Point>>> getCommand)
         {
             return new UIPanGestureRecognizer(recognizer =>
             {
@@ -133,8 +133,10 @@ namespace Vapolia.Ios.Lib.Effects
                     var control = Control ?? Container;
                     var point = recognizer.TranslationInView(control);
                     var pt = new Point(point.X, point.Y);
-                    if (handler.CanExecute(pt))
-                        handler.Execute(pt);
+                    if (handler.Item2?.CanExecute(pt) == true)
+                        handler.Item2.Execute(pt);
+                    if (handler.Item1?.CanExecute(commandParameter) == true)
+                        handler.Item1.Execute(commandParameter);
                 }
             })
             {
@@ -147,15 +149,21 @@ namespace Vapolia.Ios.Lib.Effects
         protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)
         {
             tapCommand = Gesture.GetTapCommand(Element);
-            tapPointCommand = Gesture.GetTapPointCommand(Element);
-            doubleTapCommand = Gesture.GetDoubleTapPointCommand(Element);
-            longPressCommand = Gesture.GetLongPressPointCommand(Element);
+            panCommand = Gesture.GetPanCommand(Element);
+            doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
+            longPressCommand = Gesture.GetLongPressCommand(Element);
 
             swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
-            panCommand = Gesture.GetPanPointCommand(Element);
+
+            tapPointCommand = Gesture.GetTapPointCommand(Element);
+            panPointCommand = Gesture.GetPanPointCommand(Element);
+            doubleTapPointCommand = Gesture.GetDoubleTapPointCommand(Element);
+            longPressPointCommand = Gesture.GetLongPressPointCommand(Element);
+
+            commandParameter = Gesture.GetCommandParameter(Element);
         }
 
         protected override void OnAttached()
