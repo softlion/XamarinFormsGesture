@@ -14,11 +14,11 @@
             <Label Text="1.Tap this text to open an url" />
         </StackLayout>
 
-        <StackLayout ui:Gesture.DoubleTapCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
+        <StackLayout ui:Gesture.DoubleTapPointCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
             <Label Text="2.Double tap this text to open an url" />
         </StackLayout>
 
-        <StackLayout ui:Gesture.LongPressCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
+        <StackLayout ui:Gesture.LongPressPointCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
             <Label Text="3.Long press this text to open an url" />
         </StackLayout>
 
@@ -29,7 +29,7 @@
         <StackLayout>
             <Label Text="5.Drag a finger in this space" />
             <BoxView
-                ui:Gesture.PanCommand="{Binding PanCommand}"
+                ui:Gesture.PanPointCommand="{Binding PanPointCommand}"
                 BackgroundColor="Yellow"
                 HeightRequest="200"
                 InputTransparent="False"

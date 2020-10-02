@@ -26,9 +26,10 @@ namespace Vapolia.Droid.Lib.Effects
     {
         private GestureDetectorCompat gestureRecognizer;
         private readonly InternalGestureDetector tapDetector;
-        private Command<Point> tapCommand2, panCommand, doubleTapCommand, longPressCommand;
-        private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        private Command<Point> tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
+        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
         private DisplayMetrics displayMetrics;
+        private object commandParameter;
 
         public static void Init()
         {
@@ -41,62 +42,68 @@ namespace Vapolia.Droid.Lib.Effects
                 SwipeThresholdInPoints = 40,
                 TapAction = motionEvent =>
                 {
-                    
-                    var command = tapCommand2;
-                    if (command != null)
+                    if (tapPointCommand != null)
                     {
                         var x = motionEvent.GetX();
                         var y = motionEvent.GetY();
 
                         var point = PxToDp(new Point(x,y));
-                        if (command.CanExecute(point))
-                            command.Execute(point);
+                        if (tapPointCommand.CanExecute(point))
+                            tapPointCommand.Execute(point);
                     }
-                    var handler = tapCommand;
-                    if (handler?.CanExecute(null) == true)
-                        handler.Execute(null);
+
+                    if(tapCommand != null) {
+                        if (tapCommand.CanExecute(commandParameter))
+                            tapCommand.Execute(commandParameter);
+                    }
                 },
                 DoubleTapAction = motionEvent =>
                 {
-                    var command = doubleTapCommand;
-                    if (command != null)
-                    {
+                    if (doubleTapPointCommand != null) {
                         var x = motionEvent.GetX();
                         var y = motionEvent.GetY();
 
                         var point = PxToDp(new Point(x, y));
-                        if (command.CanExecute(point))
-                            command.Execute(point);
+                        if (doubleTapPointCommand.CanExecute(point))
+                            doubleTapPointCommand.Execute(point);
+                    }
+
+                    if (doubleTapCommand != null) {
+                        if (doubleTapCommand.CanExecute(commandParameter))
+                            doubleTapCommand.Execute(commandParameter);
                     }
                 },
                 SwipeLeftAction = motionEvent =>
                 {
-                    var handler = swipeLeftCommand;
-                    if (handler?.CanExecute(null) == true)
-                        handler.Execute(null);
+                    if (swipeLeftCommand != null) {
+                        if (swipeLeftCommand.CanExecute(commandParameter))
+                            swipeLeftCommand.Execute(commandParameter);
+                    }
                 },
                 SwipeRightAction = motionEvent =>
                 {
-                    var handler = swipeRightCommand;
-                    if (handler?.CanExecute(null) == true)
-                        handler.Execute(null);
+                    if (swipeRightCommand != null) {
+                        if (swipeRightCommand.CanExecute(commandParameter))
+                            swipeRightCommand.Execute(commandParameter);
+                    }
                 },
                 SwipeTopAction = motionEvent =>
                 {
-                    var handler = swipeTopCommand;
-                    if (handler?.CanExecute(null) == true)
-                        handler.Execute(null);
+                    if (swipeTopCommand != null) {
+                        if (swipeTopCommand.CanExecute(commandParameter))
+                            swipeTopCommand.Execute(commandParameter);
+                    }
                 },
                 SwipeBottomAction = motionEvent =>
                 {
-                    var handler = swipeBottomCommand;
-                    if (handler?.CanExecute(null) == true)
-                        handler.Execute(null);
+                    if (swipeBottomCommand != null) {
+                        if (swipeBottomCommand.CanExecute(commandParameter))
+                            swipeBottomCommand.Execute(commandParameter);
+                    }
                 },
                 PanAction = (initialDown, currentMove) =>
                 {
-                    var command = panCommand;
-                    if (command != null)
+                    if (panPointCommand != null)
                     {
                         var x0 = initialDown.GetX();
                         var y0 = initialDown.GetY();
@@ -104,21 +111,30 @@ namespace Vapolia.Droid.Lib.Effects
                         var y = currentMove.GetY();
 
                         var point = PxToDp(new Point(x-x0, y-y0));
-                        if (command.CanExecute(point))
-                            command.Execute(point);
+                        if (panPointCommand.CanExecute(point))
+                            panPointCommand.Execute(point);
+                    }
+
+                    if (panCommand != null) {
+                        if (panCommand.CanExecute(commandParameter))
+                            panCommand.Execute(commandParameter);
                     }
                 },
                 LongPressAction = motionEvent =>
                 {
-                    var command = longPressCommand;
-                    if (command != null)
+                    if (longPressPointCommand != null)
                     {
                         var x = motionEvent.GetX();
                         var y = motionEvent.GetY();
 
                         var point = PxToDp(new Point(x, y));
-                        if (command.CanExecute(point))
-                            command.Execute(point);
+                        if (longPressPointCommand.CanExecute(point))
+                            longPressPointCommand.Execute(point);
+                    }
+
+                    if (longPressCommand != null) {
+                        if (longPressCommand.CanExecute(commandParameter))
+                            longPressCommand.Execute(commandParameter);
                     }
                 },
             };
@@ -134,7 +150,7 @@ namespace Vapolia.Droid.Lib.Effects
         protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)
         {
             tapCommand = Gesture.GetTapCommand(Element);
-            tapCommand2 = Gesture.GetTapCommand2(Element);
+            panCommand = Gesture.GetPanCommand(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
             longPressCommand = Gesture.GetLongPressCommand(Element);
 
@@ -142,9 +158,14 @@ namespace Vapolia.Droid.Lib.Effects
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
-            panCommand = Gesture.GetPanCommand(Element);
+
+            tapPointCommand = Gesture.GetTapPointCommand(Element);
+            panPointCommand = Gesture.GetPanPointCommand(Element);
+            doubleTapPointCommand = Gesture.GetDoubleTapPointCommand(Element);
+            longPressPointCommand = Gesture.GetLongPressPointCommand(Element);
 
             tapDetector.SwipeThresholdInPoints = Gesture.GetSwipeThreshold(Element);
+            commandParameter = Gesture.GetCommandParameter(Element);
         }
 
         protected override void OnAttached()
