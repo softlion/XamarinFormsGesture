@@ -34,7 +34,7 @@ namespace DemoApp
                 Children = { new WebView { Source = new UrlWebViewSource { Url = "https://vapolia.fr" }, HorizontalOptions = LayoutOptions.Fill, VerticalOptions = LayoutOptions.Fill} }}});
         });
 
-        public Command<Point> PanCommand => new Command<Point>(point =>
+        public Command<Point> PanPointCommand => new Command<Point>(point =>
         {
             PanX = point.X;
             PanY = point.Y;

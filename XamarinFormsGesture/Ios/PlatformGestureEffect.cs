@@ -25,7 +25,7 @@ namespace Vapolia.Ios.Lib.Effects
         private readonly List<UIGestureRecognizer> recognizers;
 
         private ICommand tapCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
-        private Command<Point> tapCommand2, panCommand, doubleTapCommand, longPressCommand;
+        private Command<Point> tapPointCommand, panCommand, doubleTapCommand, longPressCommand;
 
         public static void Init()
         {
@@ -38,7 +38,7 @@ namespace Vapolia.Ios.Lib.Effects
             //else
             //    tapDetector.ShouldReceiveTouch = (s, args) => true;
 
-            tapDetector = CreateTapRecognizer(() => Tuple.Create(tapCommand,tapCommand2));
+            tapDetector = CreateTapRecognizer(() => Tuple.Create(tapCommand,tapPointCommand));
             doubleTapDetector = CreateTapRecognizer(() => Tuple.Create((ICommand)null, doubleTapCommand));
             doubleTapDetector.NumberOfTapsRequired = 2;
             longPressDetector = CreateLongPressRecognizer(() => Tuple.Create((ICommand)null, longPressCommand));
@@ -147,15 +147,15 @@ namespace Vapolia.Ios.Lib.Effects
         protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)
         {
             tapCommand = Gesture.GetTapCommand(Element);
-            tapCommand2 = Gesture.GetTapCommand2(Element);
-            doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
-            longPressCommand = Gesture.GetLongPressCommand(Element);
+            tapPointCommand = Gesture.GetTapPointCommand(Element);
+            doubleTapCommand = Gesture.GetDoubleTapPointCommand(Element);
+            longPressCommand = Gesture.GetLongPressPointCommand(Element);
 
             swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
             swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
             swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
             swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
-            panCommand = Gesture.GetPanCommand(Element);
+            panCommand = Gesture.GetPanPointCommand(Element);
         }
 
         protected override void OnAttached()
