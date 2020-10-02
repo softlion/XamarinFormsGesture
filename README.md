@@ -53,14 +53,17 @@ And in the viewmodel:
 # Supported Gestures
 
  *  `TapCommand (ICommand)`
- *  `TapCommand2 (Command<Point>)` where point is the tap position in the view
- *  `DoubleTapCommand (Command<Point>)` where point is the double tap position in the view
+ *  `DoubleTapCommand (ICommand)`
+ *  `PanCommand (ICommand)`
+ *  `LongPressCommand (ICommand)`
+ *  `TapPointCommand (Command<Point>)` where point is the tap position in the view
+ *  `DoubleTapPoinCommand (Command<Point>)` where point is the double tap position in the view
+ *  `PanPointCommand (Command<Point>) `where point is the translation in the view from the start point of the pan gesture
+ *  `LongPressPointCommand (Command<Point>) ` where point is the tap position in the view
  *  `SwipeLeftCommand`
  *  `SwipeRightCommand`
  *  `SwipeTopCommand`
  *  `SwipeBottomCommand`
- *  `PanCommand (Command<Point>) `where point is the translation in the view from the start point of the pan gesture
- *  `LongPressCommand (Command<Point>) ` where point is the tap position in the view
 
 # Limitations
 
@@ -70,8 +73,7 @@ So you must use the MVVM pattern (https://developer.xamarin.com/guides/xamarin-f
 Swipe commands are not supported on UWP due to a bug (event not received). If you find it, notify me!
 
 If your command is not receiving events, make sure that:
-- you used the correct handler. Ie: the LongPressCommand must be `new Command<Point>(pt => ...)` and won't work with `new Command(() => ...)`.
+- you used the correct handler. Ie: the `LongPressPointCommand` must be `new Command<Point>(pt => ...)` and won't work with `new Command(() => ...)`.
 - you set IsEnabled="True" and InputTransparent="False" on the element
 
 UWP requires fall creator update  
-It does not support command parameter. Feel free to pr.
