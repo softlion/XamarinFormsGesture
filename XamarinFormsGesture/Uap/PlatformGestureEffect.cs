@@ -42,7 +42,7 @@ namespace Vapolia.Uw.Lib.Effects
                 //CrossSlideHorizontally = true
             };
 
-            detector.Dragging += (sender, args) {
+            detector.Dragging += (sender, args) => {
                 TriggerCommand(panCommand, commandParameter);
                 TriggerCommand(panPointCommand, new Point(args.Position.X, args.Position.Y));
             };
