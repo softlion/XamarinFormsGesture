@@ -39,11 +39,11 @@ namespace Vapolia.Ios.Lib.Effects
             //else
             //    tapDetector.ShouldReceiveTouch = (s, args) => true;
 
-            tapDetector = CreateTapRecognizer(() => Tuple.Create(tapCommand,tapPointCommand));
-            doubleTapDetector = CreateTapRecognizer(() => Tuple.Create(doubleTapCommand, doubleTapPointCommand));
+            tapDetector = CreateTapRecognizer(() => (tapCommand,tapPointCommand));
+            doubleTapDetector = CreateTapRecognizer(() => (doubleTapCommand, doubleTapPointCommand));
             doubleTapDetector.NumberOfTapsRequired = 2;
-            longPressDetector = CreateLongPressRecognizer(() => Tuple.Create(longPressCommand, longPressPointCommand));
-            panDetector = CreatePanRecognizer(() => Tuple.Create(panCommand, panPointCommand));
+            longPressDetector = CreateLongPressRecognizer(() => (longPressCommand, longPressPointCommand));
+            panDetector = CreatePanRecognizer(() => (panCommand, panPointCommand));
 
             swipeLeftDetector = CreateSwipeRecognizer(() => swipeLeftCommand, UISwipeGestureRecognizerDirection.Left);
             swipeRightDetector = CreateSwipeRecognizer(() => swipeRightCommand, UISwipeGestureRecognizerDirection.Right);
@@ -58,20 +58,20 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UITapGestureRecognizer CreateTapRecognizer(Func<Tuple<ICommand,Command<Point>>> getCommand)
+        private UITapGestureRecognizer CreateTapRecognizer(Func<(ICommand Command,Command<Point> PointCommand)> getCommand)
         {
             return new UITapGestureRecognizer(recognizer =>
             {
-                var handler = getCommand();
-                if (handler != null)
+                var (command, pointCommand) = getCommand();
+                if (command != null || pointCommand != null)
                 {
                     var control = Control ?? Container;
                     var point = recognizer.LocationInView(control);
                     var pt = new Point(point.X, point.Y);
-                    if (handler.Item2?.CanExecute(pt) == true)
-                        handler.Item2.Execute(pt);
-                    if(handler.Item1?.CanExecute(commandParameter) == true)
-                        handler.Item1.Execute(commandParameter);
+                    if (command?.CanExecute(commandParameter) == true)
+                        command.Execute(commandParameter);
+                    if(pointCommand?.CanExecute(pt) == true)
+                        pointCommand.Execute(pt);
                 }
             })
             {
@@ -81,22 +81,22 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UILongPressGestureRecognizer CreateLongPressRecognizer(Func<Tuple<ICommand, Command<Point>>> getCommand)
+        private UILongPressGestureRecognizer CreateLongPressRecognizer(Func<(ICommand Command, Command<Point> PointCommand)> getCommand)
         {
             return new UILongPressGestureRecognizer(recognizer =>
             {
                 if (recognizer.State == UIGestureRecognizerState.Began)
                 {
-                    var handler = getCommand();
-                    if (handler != null)
+                    var (command, pointCommand) = getCommand();
+                    if (command != null || pointCommand != null)
                     {
                         var control = Control ?? Container;
                         var point = recognizer.LocationInView(control);
                         var pt = new Point(point.X, point.Y);
-                        if (handler.Item2?.CanExecute(pt) == true)
-                            handler.Item2.Execute(pt);
-                        if (handler.Item1?.CanExecute(commandParameter) == true)
-                            handler.Item1.Execute(commandParameter);
+                        if (command?.CanExecute(commandParameter) == true)
+                            command.Execute(commandParameter);
+                        if (pointCommand?.CanExecute(pt) == true)
+                            pointCommand.Execute(pt);
                     }
                 }
             })
@@ -123,20 +123,20 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UIPanGestureRecognizer CreatePanRecognizer(Func<Tuple<ICommand, Command<Point>>> getCommand)
+        private UIPanGestureRecognizer CreatePanRecognizer(Func<(ICommand Command, Command<Point> PointCommand)> getCommand)
         {
             return new UIPanGestureRecognizer(recognizer =>
             {
-                var handler = getCommand();
-                if (handler != null)
+                var (command, pointCommand) = getCommand();
+                if (command != null || pointCommand != null)
                 {
                     var control = Control ?? Container;
                     var point = recognizer.TranslationInView(control);
                     var pt = new Point(point.X, point.Y);
-                    if (handler.Item2?.CanExecute(pt) == true)
-                        handler.Item2.Execute(pt);
-                    if (handler.Item1?.CanExecute(commandParameter) == true)
-                        handler.Item1.Execute(commandParameter);
+                    if (command?.CanExecute(commandParameter) == true)
+                        command.Execute(commandParameter);
+                    if (pointCommand?.CanExecute(pt) == true)
+                        pointCommand.Execute(pt);
                 }
             })
             {

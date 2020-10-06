@@ -40,9 +40,11 @@ namespace Vapolia.Uw.Lib.Effects
                     | GestureSettings.HoldWithMouse,
                 ShowGestureFeedback = false,
                 //CrossSlideHorizontally = true
+                //AutoProcessInertia = true //default
             };
 
-            detector.Dragging += (sender, args) => {
+            detector.Dragging += (sender, args) => 
+            {
                 TriggerCommand(panCommand, commandParameter);
                 TriggerCommand(panPointCommand, new Point(args.Position.X, args.Position.Y));
             };
@@ -54,7 +56,8 @@ namespace Vapolia.Uw.Lib.Effects
                     TriggerCommand(tapCommand, commandParameter);
                     TriggerCommand(tapPointCommand, new Point(args.Position.X, args.Position.Y));
                 }
-                else if (args.TapCount == 2) {
+                else if (args.TapCount == 2) 
+                {
                     TriggerCommand(doubleTapCommand, commandParameter);
                     TriggerCommand(doubleTapPointCommand, new Point(args.Position.X, args.Position.Y));
                 }
@@ -62,7 +65,8 @@ namespace Vapolia.Uw.Lib.Effects
 
             detector.Holding += (sender, args) =>
             {
-                if(args.HoldingState == HoldingState.Started) {
+                if(args.HoldingState == HoldingState.Started) 
+                {
                     TriggerCommand(longPressCommand, commandParameter);
                     TriggerCommand(longPressPointCommand, new Point(args.Position.X, args.Position.Y));
                 }
@@ -96,9 +100,8 @@ namespace Vapolia.Uw.Lib.Effects
 
         private void TriggerCommand(ICommand command, object parameter)
         {
-            if(command != null)
-                if(command.CanExecute(parameter))
-                    command.Execute(parameter);
+            if(command?.CanExecute(parameter) == true)
+                command.Execute(parameter);
         }
 
         protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)
@@ -131,6 +134,7 @@ namespace Vapolia.Uw.Lib.Effects
             control.PointerReleased += ControlOnPointerReleased;
             control.PointerCanceled += ControlOnPointerCanceled;
             control.PointerCaptureLost += ControlOnPointerCanceled;
+            //control.ManipulationInertiaStarting += ControlOnManipulationInertiaStarting;
             //control.PointerExited += ControlOnPointerCanceled;
 
             OnElementPropertyChanged(new PropertyChangedEventArgs(String.Empty));
@@ -144,8 +148,15 @@ namespace Vapolia.Uw.Lib.Effects
             control.PointerReleased -= ControlOnPointerReleased;
             control.PointerCanceled -= ControlOnPointerCanceled;
             control.PointerCaptureLost -= ControlOnPointerCanceled;
+            //control.ManipulationInertiaStarting -= ControlOnManipulationInertiaStarting;
             //control.PointerExited -= ControlOnPointerCanceled;
         }
+
+        //private void ControlOnManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
+        //{
+        //    detector.ProcessInertia();
+        //    e.Handled = true;
+        //}
 
         private void ControlOnPointerPressed(object sender, PointerRoutedEventArgs pointerRoutedEventArgs)
         {
