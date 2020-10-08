@@ -1,6 +1,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/8t8m8n0do3p0304n?svg=true)](https://ci.appveyor.com/project/softlion/xamarinformsgesture)
 
-[![NuGet](https://img.shields.io/nuget/v/Vapolia.XamarinFormsGesture.svg?style=for-the-badge)](https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/)
+[![NuGet](https://img.shields.io/nuget/v/Vapolia.XamarinFormsGesture.svg?style=for-the-badge)](https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/)  
+[![NuGet](https://img.shields.io/nuget/vpre/Vapolia.XamarinFormsGesture.svg?style=for-the-badge)](https://www.nuget.org/packages/Vapolia.XamarinFormsGesture/)  
+![Nuget](https://img.shields.io/nuget/dt/Vapolia.XamarinFormsGesture)
 
 # Supported Platforms
 
