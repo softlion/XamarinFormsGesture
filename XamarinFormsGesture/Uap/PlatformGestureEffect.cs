@@ -18,11 +18,20 @@ namespace Vapolia.Uw.Lib.Effects
     public class PlatformGestureEffect : PlatformEffect
     {
         readonly Windows.UI.Input.GestureRecognizer detector;
-        private Command<Point> tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
-        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
         int swipeThresholdInPoints = 40;
         private object commandParameter;
-
+        
+        /// <summary>
+        /// Take a Point parameter
+        /// Except panPointCommand which takes a (Point,GestureStatus) parameter (its a tuple) 
+        /// </summary>
+        private ICommand tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
+        
+        /// <summary>
+        /// No parameter
+        /// </summary>
+        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        
         public static void Init()
         {
         }
@@ -46,7 +55,15 @@ namespace Vapolia.Uw.Lib.Effects
             detector.Dragging += (sender, args) => 
             {
                 TriggerCommand(panCommand, commandParameter);
-                TriggerCommand(panPointCommand, new Point(args.Position.X, args.Position.Y));
+                var gestureStatus = args.DraggingState switch
+                {
+                    DraggingState.Started => GestureStatus.Started,
+                    DraggingState.Continuing => GestureStatus.Running,
+                    DraggingState.Completed => GestureStatus.Completed,
+                    _ => GestureStatus.Canceled
+                };
+                var parameters = (new Point(args.Position.X, args.Position.Y), gestureStatus);
+                TriggerCommand(panPointCommand, parameters);
             };
 
             detector.Tapped += (sender, args) =>

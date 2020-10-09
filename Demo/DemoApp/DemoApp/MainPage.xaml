@@ -15,11 +15,11 @@
             <Label Text="1.Tap this text to open an url" />
         </StackLayout>
 
-        <StackLayout ui:Gesture.DoubleTapPointCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
+        <StackLayout ui:Gesture.DoubleTapPointCommand="{Binding OpenVapoliaPointCommand}" IsEnabled="True">
             <Label Text="2.Double tap this text to open an url" />
         </StackLayout>
 
-        <StackLayout ui:Gesture.LongPressPointCommand="{Binding OpenVapolia2Command}" IsEnabled="True">
+        <StackLayout ui:Gesture.LongPressPointCommand="{Binding OpenVapoliaPointCommand}" IsEnabled="True">
             <Label Text="3.Long press this text to open an url" />
         </StackLayout>
 

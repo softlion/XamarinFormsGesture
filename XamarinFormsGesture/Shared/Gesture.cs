@@ -16,9 +16,6 @@ namespace Vapolia.Lib.Ui
     [Preserve (Conditional=true, AllMembers = true)]
     public static class Gesture
     {
-        /// <summary>
-        /// Android only for now
-        /// </summary>
         public static readonly BindableProperty LongPressCommandProperty = BindableProperty.CreateAttached("LongPressCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty TapCommandProperty = BindableProperty.CreateAttached("TapCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty DoubleTapCommandProperty = BindableProperty.CreateAttached("DoubleTapCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
@@ -30,12 +27,21 @@ namespace Vapolia.Lib.Ui
         public static readonly BindableProperty SwipeBottomCommandProperty = BindableProperty.CreateAttached("SwipeBottomCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
 
         /// <summary>
-        /// Android only for now
+        /// Take a Point parameter 
         /// </summary>
-        public static readonly BindableProperty LongPressPointCommandProperty = BindableProperty.CreateAttached("LongPressPointCommand", typeof(Command<Point>), typeof(Gesture), null, propertyChanged: CommandChanged);
-        public static readonly BindableProperty TapPointCommandProperty = BindableProperty.CreateAttached("TapPointCommand", typeof(Command<Point>), typeof(Gesture), null, propertyChanged: CommandChanged);
-        public static readonly BindableProperty DoubleTapPointCommandProperty = BindableProperty.CreateAttached("DoubleTapPointCommand", typeof(Command<Point>), typeof(Gesture), null, propertyChanged: CommandChanged);
-        public static readonly BindableProperty PanPointCommandProperty = BindableProperty.CreateAttached("PanPointCommand", typeof(Command<Point>), typeof(Gesture), null, propertyChanged: CommandChanged);
+        public static readonly BindableProperty LongPressPointCommandProperty = BindableProperty.CreateAttached("LongPressPointCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static readonly BindableProperty TapPointCommandProperty = BindableProperty.CreateAttached("TapPointCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static readonly BindableProperty DoubleTapPointCommandProperty = BindableProperty.CreateAttached("DoubleTapPointCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
+        /// <summary>
+        /// Take a (Point,GestureStatus) parameter (it is a tuple) 
+        /// </summary>
+        public static readonly BindableProperty PanPointCommandProperty = BindableProperty.CreateAttached("PanPointCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
        
         /// <summary>
         /// Android only: min distance to trigger a swipe
@@ -51,10 +57,23 @@ namespace Vapolia.Lib.Ui
         public static ICommand GetSwipeRightCommand(BindableObject view) => (ICommand)view.GetValue(SwipeRightCommandProperty);
         public static ICommand GetSwipeTopCommand(BindableObject view) => (ICommand)view.GetValue(SwipeTopCommandProperty);
         public static ICommand GetSwipeBottomCommand(BindableObject view) => (ICommand)view.GetValue(SwipeBottomCommandProperty);
-        public static Command<Point> GetLongPressPointCommand(BindableObject view) => (Command<Point>)view.GetValue(LongPressPointCommandProperty);
-        public static Command<Point> GetTapPointCommand(BindableObject view) => (Command<Point>)view.GetValue(TapPointCommandProperty);
-        public static Command<Point> GetDoubleTapPointCommand(BindableObject view) => (Command<Point>)view.GetValue(DoubleTapPointCommandProperty);
-        public static Command<Point> GetPanPointCommand(BindableObject view) => (Command<Point>)view.GetValue(PanPointCommandProperty);
+
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static ICommand GetLongPressPointCommand(BindableObject view) => (ICommand)view.GetValue(LongPressPointCommandProperty);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static ICommand GetTapPointCommand(BindableObject view) => (ICommand)view.GetValue(TapPointCommandProperty);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static ICommand GetDoubleTapPointCommand(BindableObject view) => (ICommand)view.GetValue(DoubleTapPointCommandProperty);
+        /// <summary>
+        /// Take a (Point,GestureStatus) parameter (it is a tuple) 
+        /// </summary>
+        public static ICommand GetPanPointCommand(BindableObject view) => (ICommand)view.GetValue(PanPointCommandProperty);
 
         public static void SetLongPressCommand(BindableObject view, ICommand value) => view.SetValue(LongPressCommandProperty, value);
         public static void SetTapCommand(BindableObject view, ICommand value) => view.SetValue(TapCommandProperty, value);
@@ -64,10 +83,22 @@ namespace Vapolia.Lib.Ui
         public static void SetSwipeRightCommand(BindableObject view, ICommand value) => view.SetValue(SwipeRightCommandProperty, value);
         public static void SetSwipeTopCommand(BindableObject view, ICommand value) => view.SetValue(SwipeTopCommandProperty, value);
         public static void SetSwipeBottomCommand(BindableObject view, ICommand value) => view.SetValue(SwipeBottomCommandProperty, value);
-        public static void SetLongPressPointCommand(BindableObject view, Command<Point> value) => view.SetValue(LongPressPointCommandProperty, value);
-        public static void SetTapPointCommand(BindableObject view, Command<Point> value) => view.SetValue(TapPointCommandProperty, value);
-        public static void SetDoubleTapPointCommand(BindableObject view, Command<Point> value) => view.SetValue(DoubleTapPointCommandProperty, value);
-        public static void SetPanPointCommand(BindableObject view, Command<Point> value) => view.SetValue(PanPointCommandProperty, value);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static void SetLongPressPointCommand(BindableObject view, ICommand value) => view.SetValue(LongPressPointCommandProperty, value);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static void SetTapPointCommand(BindableObject view, ICommand value) => view.SetValue(TapPointCommandProperty, value);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static void SetDoubleTapPointCommand(BindableObject view, ICommand value) => view.SetValue(DoubleTapPointCommandProperty, value);
+        /// <summary>
+        /// Take a Point parameter 
+        /// </summary>
+        public static void SetPanPointCommand(BindableObject view, ICommand value) => view.SetValue(PanPointCommandProperty, value);
 
         public static int GetSwipeThreshold(BindableObject view) => (int)view.GetValue(SwipeThresholdProperty);
         public static void SetSwipeThreshold(BindableObject view, int value) => view.SetValue(SwipeThresholdProperty, value);

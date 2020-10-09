@@ -26,10 +26,20 @@ namespace Vapolia.Droid.Lib.Effects
     {
         private GestureDetectorCompat gestureRecognizer;
         private readonly InternalGestureDetector tapDetector;
-        private Command<Point> tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
-        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
         private DisplayMetrics displayMetrics;
         private object commandParameter;
+
+        /// <summary>
+        /// Take a Point parameter
+        /// Except panPointCommand which takes a (Point,GestureStatus) parameter (its a tuple) 
+        /// </summary>
+        private ICommand tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
+        
+        /// <summary>
+        /// No parameter
+        /// </summary>
+        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        
 
         public static void Init()
         {
@@ -105,14 +115,25 @@ namespace Vapolia.Droid.Lib.Effects
                 {
                     if (panPointCommand != null)
                     {
-                        var x0 = initialDown.GetX();
-                        var y0 = initialDown.GetY();
+                        // var x0 = initialDown.GetX();
+                        // var y0 = initialDown.GetY();
                         var x = currentMove.GetX();
                         var y = currentMove.GetY();
+                        // var point = PxToDp(new Point(x-x0, y-y0));
+                        var point = PxToDp(new Point(x, y));
 
-                        var point = PxToDp(new Point(x-x0, y-y0));
-                        if (panPointCommand.CanExecute(point))
-                            panPointCommand.Execute(point);
+                        var status = currentMove.Action switch
+                        {
+                            MotionEventActions.Down => GestureStatus.Started,
+                            MotionEventActions.Move => GestureStatus.Running,
+                            MotionEventActions.Up => GestureStatus.Completed,
+                            MotionEventActions.Cancel => GestureStatus.Canceled,
+                            _ => GestureStatus.Canceled
+                        };
+
+                        var parameter = (point,status);
+                        if (panPointCommand.CanExecute(parameter))
+                            panPointCommand.Execute(parameter);
                     }
 
                     if (panCommand != null) {

@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace DemoApp
 {
@@ -25,7 +26,7 @@ namespace DemoApp
             this.navigation = navigation;
         }
 
-        public Command OpenVapoliaCommand => new Command(async () =>
+        public ICommand OpenVapoliaCommand => new Command(async () =>
         {
             await navigation.PushAsync(new ContentPage {
                 Title = "Web",
@@ -34,13 +35,14 @@ namespace DemoApp
                 Children = { new WebView { Source = new UrlWebViewSource { Url = "https://vapolia.fr" }, HorizontalOptions = LayoutOptions.Fill, VerticalOptions = LayoutOptions.Fill} }}});
         });
 
-        public Command<Point> PanPointCommand => new Command<Point>(point =>
+        public ICommand PanPointCommand => new Command<(Point Point,GestureStatus Status)>(args =>
         {
+            var point = args.Point;
             PanX = point.X;
             PanY = point.Y;
         });
 
-        public Command<Point> OpenVapolia2Command => new Command<Point>(point =>
+        public ICommand OpenVapoliaPointCommand => new Command<Point>(point =>
         {
             PanX = point.X;
             PanY = point.Y;

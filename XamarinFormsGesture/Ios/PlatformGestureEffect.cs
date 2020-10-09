@@ -24,8 +24,17 @@ namespace Vapolia.Ios.Lib.Effects
         private readonly UIPanGestureRecognizer panDetector;
         private readonly List<UIGestureRecognizer> recognizers;
 
-        private Command<Point> tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
+        /// <summary>
+        /// Take a Point parameter
+        /// Except panPointCommand which takes a (Point,GestureStatus) parameter (its a tuple) 
+        /// </summary>
+        private ICommand tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
+        
+        /// <summary>
+        /// No parameter
+        /// </summary>
         private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+
         private object commandParameter;
 
         public static void Init()
@@ -58,7 +67,7 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UITapGestureRecognizer CreateTapRecognizer(Func<(ICommand Command,Command<Point> PointCommand)> getCommand)
+        private UITapGestureRecognizer CreateTapRecognizer(Func<(ICommand Command,ICommand PointCommand)> getCommand)
         {
             return new UITapGestureRecognizer(recognizer =>
             {
@@ -81,7 +90,7 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UILongPressGestureRecognizer CreateLongPressRecognizer(Func<(ICommand Command, Command<Point> PointCommand)> getCommand)
+        private UILongPressGestureRecognizer CreateLongPressRecognizer(Func<(ICommand Command, ICommand PointCommand)> getCommand)
         {
             return new UILongPressGestureRecognizer(recognizer =>
             {
@@ -123,7 +132,7 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UIPanGestureRecognizer CreatePanRecognizer(Func<(ICommand Command, Command<Point> PointCommand)> getCommand)
+        private UIPanGestureRecognizer CreatePanRecognizer(Func<(ICommand Command, ICommand PointCommand)> getCommand)
         {
             return new UIPanGestureRecognizer(recognizer =>
             {
@@ -131,12 +140,26 @@ namespace Vapolia.Ios.Lib.Effects
                 if (command != null || pointCommand != null)
                 {
                     var control = Control ?? Container;
-                    var point = recognizer.TranslationInView(control);
-                    var pt = new Point(point.X, point.Y);
+                    var point = recognizer.LocationInView(control);
+                    
                     if (command?.CanExecute(commandParameter) == true)
                         command.Execute(commandParameter);
-                    if (pointCommand?.CanExecute(pt) == true)
-                        pointCommand.Execute(pt);
+
+                    if (pointCommand != null)
+                    {
+                        var gestureStatus = recognizer.State switch
+                        {
+                            UIGestureRecognizerState.Began => GestureStatus.Started,
+                            UIGestureRecognizerState.Changed => GestureStatus.Running,
+                            UIGestureRecognizerState.Ended => GestureStatus.Completed,
+                            UIGestureRecognizerState.Cancelled => GestureStatus.Canceled,
+                            _ => GestureStatus.Canceled,
+                        };
+                        
+                        var parameters = (new Point(point.X, point.Y), gestureStatus);
+                        if (pointCommand.CanExecute(parameters))
+                            pointCommand.Execute(parameters);
+                    }
                 }
             })
             {

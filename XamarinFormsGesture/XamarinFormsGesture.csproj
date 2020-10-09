@@ -5,6 +5,7 @@
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);uap10.0.17763;</TargetFrameworks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <DebugType>portable</DebugType>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

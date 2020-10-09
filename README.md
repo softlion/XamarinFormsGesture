@@ -58,14 +58,59 @@ And in the viewmodel:
  *  `DoubleTapCommand (ICommand)`
  *  `PanCommand (ICommand)`
  *  `LongPressCommand (ICommand)`
- *  `TapPointCommand (Command<Point>)` where point is the tap position in the view
- *  `DoubleTapPoinCommand (Command<Point>)` where point is the double tap position in the view
- *  `PanPointCommand (Command<Point>) `where point is the translation in the view from the start point of the pan gesture
- *  `LongPressPointCommand (Command<Point>) ` where point is the tap position in the view
+ *  `TapPointCommand (ICommand or Command<Point>)` where point is the absolute tap position relative to the view
+ *  `DoubleTapPoinCommand (ICommand or Command<Point>)` where point is the absolute double tap position relative to the view
+ *  `PanPointCommand (ICommand or Command<(Point,GestureStatus)>)` where point is the absolute position relative to the view
+ *  `LongPressPointCommand (ICommand or Command<Point>) ` where point is the absolute tap position relative to the view
  *  `SwipeLeftCommand`
  *  `SwipeRightCommand`
  *  `SwipeTopCommand`
  *  `SwipeBottomCommand`
+ 
+# Examples
+
+```xml
+<StackLayout ui:Gesture.TapCommand="{Binding OpenCommand}" IsEnabled="True">
+    <Label Text="1.Tap this text to open an url" />
+</StackLayout>
+
+<StackLayout ui:Gesture.DoubleTapPointCommand="{Binding OpenPointCommand}" IsEnabled="True">
+    <Label Text="2.Double tap this text to open an url" />
+</StackLayout>
+
+<BoxView
+    ui:Gesture.PanPointCommand="{Binding PanPointCommand}"
+    HeightRequest="200" WidthRequest="300"
+    InputTransparent="False"
+    IsEnabled="True"
+     />
+```
+
+In the viewmodel:
+
+```csharp
+public ICommand OpenCommand => new Command(async () =>
+{
+   //...
+});
+
+public ICommand OpenPointCommand => new Command<Point>(point =>
+{
+    PanX = point.X;
+    PanY = point.Y;
+    //...
+});
+
+public ICommand PanPointCommand => new Command<(Point Point,GestureStatus Status)>(args =>
+{
+    var point = args.Point;
+    PanX = point.X;
+    PanY = point.Y;
+    //...
+});
+
+``` 
+        
 
 # Limitations
 
@@ -75,7 +120,13 @@ So you must use the MVVM pattern (https://developer.xamarin.com/guides/xamarin-f
 Swipe commands are not supported on UWP due to a bug (event not received). If you find it, notify me!
 
 If your command is not receiving events, make sure that:
-- you used the correct handler. Ie: the `LongPressPointCommand` must be `new Command<Point>(pt => ...)` and won't work with `new Command(() => ...)`.
+- you used the correct handler. Ie: the `LongPressPointCommand` should be `new Command<Point>(pt => ...)`
 - you set IsEnabled="True" and InputTransparent="False" on the element
 
 UWP requires fall creator update  
+
+# Breaking changes
+
+Version 3.3.0 has breaking changes:  
+- Command names have changed
+- PanPointCommand returns an absolute position, not a relative position anymore. It also returns the gesture state.
