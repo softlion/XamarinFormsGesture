@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
+using Foundation;
+using ObjCRuntime;
 using UIKit;
 using Vapolia.Ios.Lib.Effects;
 using Vapolia.Lib.Ui;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ResolutionGroupName("Vapolia")]
@@ -14,14 +15,43 @@ using Xamarin.Forms.Platform.iOS;
 
 namespace Vapolia.Ios.Lib.Effects
 {
+    public class UIImmediatePanGestureRecognizer : UIPanGestureRecognizer
+    {
+        public UIImmediatePanGestureRecognizer()
+        {
+        }
 
-    [Preserve (Conditional=true, AllMembers = true)]
+        public UIImmediatePanGestureRecognizer(Action action) : base(action)
+        {
+        }
+
+        public UIImmediatePanGestureRecognizer(Action<UIPanGestureRecognizer> action) : base(action)
+        {
+        }
+
+        [Preserve]
+        protected internal UIImmediatePanGestureRecognizer(IntPtr handle) : base(handle)
+        {
+        }
+
+        public bool IsImmediate { get; set; } = false;
+        
+        public override void TouchesBegan(NSSet touches, UIEvent evt)
+        {
+            base.TouchesBegan(touches, evt);
+            if(IsImmediate)
+                State = UIGestureRecognizerState.Began;
+        }
+     }
+
+
+    [Xamarin.Forms.Internals.Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
         private readonly UITapGestureRecognizer tapDetector, doubleTapDetector;
         private readonly UILongPressGestureRecognizer longPressDetector;
         private readonly UISwipeGestureRecognizer swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector;
-        private readonly UIPanGestureRecognizer panDetector;
+        private readonly UIImmediatePanGestureRecognizer panDetector;
         private readonly List<UIGestureRecognizer> recognizers;
 
         /// <summary>
@@ -132,9 +162,9 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UIPanGestureRecognizer CreatePanRecognizer(Func<(ICommand Command, ICommand PointCommand)> getCommand)
+        private UIImmediatePanGestureRecognizer CreatePanRecognizer(Func<(ICommand Command, ICommand PointCommand)> getCommand)
         {
-            return new UIPanGestureRecognizer(recognizer =>
+            return new UIImmediatePanGestureRecognizer(recognizer =>
             {
                 var (command, pointCommand) = getCommand();
                 if (command != null || pointCommand != null)
@@ -173,6 +203,7 @@ namespace Vapolia.Ios.Lib.Effects
         {
             tapCommand = Gesture.GetTapCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
+            panDetector.IsImmediate = Gesture.GetIsPanImmediate(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
             longPressCommand = Gesture.GetLongPressCommand(Element);
 

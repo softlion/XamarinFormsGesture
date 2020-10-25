@@ -32,19 +32,63 @@
             <BoxView
                 ui:Gesture.PanPointCommand="{Binding PanPointCommand}"
                 BackgroundColor="Yellow"
-                HeightRequest="200"
+                HeightRequest="100"
                 InputTransparent="False"
                 IsEnabled="True"
                 WidthRequest="300" />
             <StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="dX:" />
-                    <Label Text="{Binding PanX}" />
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="dY:" />
-                    <Label Text="{Binding PanY}" />
-                </StackLayout>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="dX;dY: " />
+                            <Span Text="{Binding Pan.X}" />
+                            <Span Text=" ; " />
+                            <Span Text="{Binding Pan.Y}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </StackLayout>
+        </StackLayout>
+
+        <StackLayout>
+            <Label Text="6.Pinch with 2 fingers in this space" />
+            <BoxView
+                ui:Gesture.PinchCommand="{Binding PinchCommand}"
+                BackgroundColor="Yellow"
+                HeightRequest="150"
+                InputTransparent="False"
+                IsEnabled="True"
+                WidthRequest="300" />
+            <StackLayout Orientation="Horizontal" Spacing="20">
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Center: " />
+                            <Span Text="{Binding Pinch.X}" />
+                            <Span Text=" ; " />
+                            <Span Text="{Binding Pinch.Y}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Rotation: " />
+                            <Span Text="{Binding Rotation, StringFormat='{0:0.00}°'}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Scale: " />
+                            <Span Text="{Binding Scale, StringFormat='{0:0.00}'}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
             </StackLayout>
         </StackLayout>
 

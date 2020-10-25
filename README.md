@@ -67,6 +67,10 @@ And in the viewmodel:
  *  `SwipeTopCommand`
  *  `SwipeBottomCommand`
  
+ Properties:
+ 
+ * `IsPanImmediate` Set to true to receive the PanCommand or PanPointCommand event on touch down, instead of after a minimum move distance. Default to false.
+ 
 # Examples
 
 ```xml

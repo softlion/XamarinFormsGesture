@@ -9,7 +9,7 @@ if ($IsMacOS) {
 #####################
 #Build release config
 $version="3.3.0"
-$versionSuffix="-pre2"
+$versionSuffix="-pre3"
 $nugetVersion="$version$versionSuffix"
 #$versionSuffix=".$env:BUILD_NUMBER" 
 

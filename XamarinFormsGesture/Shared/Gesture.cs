@@ -20,6 +20,7 @@ namespace Vapolia.Lib.Ui
         public static readonly BindableProperty TapCommandProperty = BindableProperty.CreateAttached("TapCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty DoubleTapCommandProperty = BindableProperty.CreateAttached("DoubleTapCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty PanCommandProperty = BindableProperty.CreateAttached("PanCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
+        public static readonly BindableProperty PinchCommandProperty = BindableProperty.CreateAttached("PinchCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         
         public static readonly BindableProperty SwipeLeftCommandProperty = BindableProperty.CreateAttached("SwipeLeftCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
         public static readonly BindableProperty SwipeRightCommandProperty = BindableProperty.CreateAttached("SwipeRightCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
@@ -42,6 +43,7 @@ namespace Vapolia.Lib.Ui
         /// Take a (Point,GestureStatus) parameter (it is a tuple) 
         /// </summary>
         public static readonly BindableProperty PanPointCommandProperty = BindableProperty.CreateAttached("PanPointCommand", typeof(ICommand), typeof(Gesture), null, propertyChanged: CommandChanged);
+        public static readonly BindableProperty IsPanImmediateProperty = BindableProperty.CreateAttached("IsPanImmediate", typeof(bool), typeof(Gesture), false, propertyChanged: CommandChanged);
        
         /// <summary>
         /// Android only: min distance to trigger a swipe
@@ -53,6 +55,8 @@ namespace Vapolia.Lib.Ui
         public static ICommand GetTapCommand(BindableObject view) => (ICommand)view.GetValue(TapCommandProperty);
         public static ICommand GetDoubleTapCommand(BindableObject view) => (ICommand)view.GetValue(DoubleTapCommandProperty);
         public static ICommand GetPanCommand(BindableObject view) => (ICommand)view.GetValue(PanCommandProperty);
+        public static ICommand GetPinchCommand(BindableObject view) => (ICommand)view.GetValue(PinchCommandProperty);
+        public static bool GetIsPanImmediate(BindableObject view) => (bool)view.GetValue(IsPanImmediateProperty);
         public static ICommand GetSwipeLeftCommand(BindableObject view) => (ICommand)view.GetValue(SwipeLeftCommandProperty);
         public static ICommand GetSwipeRightCommand(BindableObject view) => (ICommand)view.GetValue(SwipeRightCommandProperty);
         public static ICommand GetSwipeTopCommand(BindableObject view) => (ICommand)view.GetValue(SwipeTopCommandProperty);
@@ -79,6 +83,8 @@ namespace Vapolia.Lib.Ui
         public static void SetTapCommand(BindableObject view, ICommand value) => view.SetValue(TapCommandProperty, value);
         public static void SetDoubleTapCommand(BindableObject view, ICommand value) => view.SetValue(DoubleTapCommandProperty, value);
         public static void SetPanCommand(BindableObject view, ICommand value) => view.SetValue(PanCommandProperty, value);
+        public static void SetPinchCommand(BindableObject view, ICommand value) => view.SetValue(PinchCommandProperty, value);
+        public static void SetIsPanImmediate(BindableObject view, bool isImmediate) => view.SetValue(IsPanImmediateProperty, isImmediate);
         public static void SetSwipeLeftCommand(BindableObject view, ICommand value) => view.SetValue(SwipeLeftCommandProperty, value);
         public static void SetSwipeRightCommand(BindableObject view, ICommand value) => view.SetValue(SwipeRightCommandProperty, value);
         public static void SetSwipeTopCommand(BindableObject view, ICommand value) => view.SetValue(SwipeTopCommandProperty, value);

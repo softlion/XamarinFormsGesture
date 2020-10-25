@@ -6,12 +6,13 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <DebugType>portable</DebugType>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
       <PackageReference Include="Xamarin.Forms" Version="4.5.0.356" />
       <Compile Include="Shared\**\*.cs" />
-      <None Include="..\\LICENSE" Pack="true" PackagePath=""/>
+      <None Include="..\\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <Compile Include="Android\**\*.cs" />

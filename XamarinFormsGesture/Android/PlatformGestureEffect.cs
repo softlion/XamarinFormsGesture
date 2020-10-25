@@ -24,7 +24,7 @@ namespace Vapolia.Droid.Lib.Effects
     [Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
-        private GestureDetectorCompat gestureRecognizer;
+        private GestureDetectorCompat? gestureRecognizer;
         private readonly InternalGestureDetector tapDetector;
         private DisplayMetrics displayMetrics;
         private object commandParameter;
@@ -33,12 +33,17 @@ namespace Vapolia.Droid.Lib.Effects
         /// Take a Point parameter
         /// Except panPointCommand which takes a (Point,GestureStatus) parameter (its a tuple) 
         /// </summary>
-        private ICommand tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
+        private ICommand? tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
         
         /// <summary>
         /// No parameter
         /// </summary>
-        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+        private ICommand? tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
+
+        /// <summary>
+        /// 1 parameter: PinchEventArgs
+        /// </summary>
+        private ICommand pinchCommand;
         
 
         public static void Init()
@@ -141,6 +146,29 @@ namespace Vapolia.Droid.Lib.Effects
                             panCommand.Execute(commandParameter);
                     }
                 },
+                PinchAction = (initialDown, currentMove) =>
+                {
+                    if (pinchCommand != null)
+                    {
+                        var origin0 = PxToDp(new Point(initialDown.GetX(0), initialDown.GetY(0)));
+                        var origin1 = PxToDp(new Point(initialDown.GetX(1), initialDown.GetY(1)));
+                        var current0 = PxToDp(new Point(currentMove.GetX(0), currentMove.GetY(0)));
+                        var current1 = PxToDp(new Point(currentMove.GetX(1), currentMove.GetY(1)));
+                        
+                        var status = currentMove.Action switch
+                        {
+                            MotionEventActions.Down => GestureStatus.Started,
+                            MotionEventActions.Move => GestureStatus.Running,
+                            MotionEventActions.Up => GestureStatus.Completed,
+                            MotionEventActions.Cancel => GestureStatus.Canceled,
+                            _ => GestureStatus.Canceled
+                        };
+
+                        var commandParameter = new PinchEventArgs(status, (current0, current1), (origin0, origin1));
+                        if (pinchCommand.CanExecute(commandParameter))
+                            pinchCommand.Execute(commandParameter);
+                    }
+                },
                 LongPressAction = motionEvent =>
                 {
                     if (longPressPointCommand != null)
@@ -172,6 +200,8 @@ namespace Vapolia.Droid.Lib.Effects
         {
             tapCommand = Gesture.GetTapCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
+            pinchCommand = Gesture.GetPinchCommand(Element);
+            tapDetector.IsPanImmediate = Gesture.GetIsPanImmediate(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
             longPressCommand = Gesture.GetLongPressCommand(Element);
 
@@ -225,43 +255,58 @@ namespace Vapolia.Droid.Lib.Effects
         sealed class InternalGestureDetector : GestureDetector.SimpleOnGestureListener
         {
             public int SwipeThresholdInPoints { get; set; }
+            public bool IsPanImmediate { get; set; }
 
-            public Action<MotionEvent> TapAction { get; set; }
-            public Action<MotionEvent> DoubleTapAction { get; set; }
-            public Action<MotionEvent> SwipeLeftAction { get; set; }
-            public Action<MotionEvent> SwipeRightAction { get; set; }
-            public Action<MotionEvent> SwipeTopAction { get; set; }
-            public Action<MotionEvent> SwipeBottomAction { get; set; }
-            public Action<MotionEvent, MotionEvent> PanAction { get; set; }
-            public Action<MotionEvent> LongPressAction { get; set; }
+            public Action<MotionEvent>? TapAction { get; set; }
+            public Action<MotionEvent>? DoubleTapAction { get; set; }
+            public Action<MotionEvent>? SwipeLeftAction { get; set; }
+            public Action<MotionEvent>? SwipeRightAction { get; set; }
+            public Action<MotionEvent>? SwipeTopAction { get; set; }
+            public Action<MotionEvent>? SwipeBottomAction { get; set; }
+            public Action<MotionEvent, MotionEvent>? PanAction { get; set; }
+            public Action<MotionEvent, MotionEvent>? PinchAction { get; set; }
+            public Action<MotionEvent>? LongPressAction { get; set; }
 
             public float Density { get; set; }
 
-            public override bool OnDoubleTap(MotionEvent e)
+            public override bool OnDoubleTap(MotionEvent? e)
             {
                 DoubleTapAction?.Invoke(e);
                 return true;
             }
 
 
-            public override bool OnSingleTapUp(MotionEvent e)
+            public override bool OnSingleTapUp(MotionEvent? e)
             {
                 TapAction?.Invoke(e);
                 return true;
             }
 
-            public override void OnLongPress(MotionEvent e)
+            public override void OnLongPress(MotionEvent? e)
             {
                 LongPressAction?.Invoke(e);
             }
 
-            public override bool OnScroll(MotionEvent initialDown, MotionEvent currentMove, float distanceX, float distanceY)
+            public override bool OnDown(MotionEvent? e)
             {
-                PanAction?.Invoke(initialDown, currentMove);
+                if (e!=null && IsPanImmediate && e.PointerCount == 1)
+                    PanAction?.Invoke(e, e);
+                return false;
+            }
+
+            public override bool OnScroll(MotionEvent? initialDown, MotionEvent? currentMove, float distanceX, float distanceY)
+            {
+                if (initialDown != null)
+                {
+                    if(initialDown.PointerCount == 1)
+                        PanAction?.Invoke(initialDown, currentMove);
+                    else if(initialDown.PointerCount == 2)
+                        PinchAction?.Invoke(initialDown, currentMove);
+                }
                 return true;
             }
 
-            public override bool OnFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+            public override bool OnFling(MotionEvent? e1, MotionEvent? e2, float velocityX, float velocityY)
             {
                 var dx = e2.RawX - e1.RawX;
                 var dy = e2.RawY - e1.RawY;
