@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
-using Foundation;
-using ObjCRuntime;
 using UIKit;
 using Vapolia.Ios.Lib.Effects;
 using Vapolia.Lib.Ui;
@@ -15,36 +13,6 @@ using Xamarin.Forms.Platform.iOS;
 
 namespace Vapolia.Ios.Lib.Effects
 {
-    public class UIImmediatePanGestureRecognizer : UIPanGestureRecognizer
-    {
-        public UIImmediatePanGestureRecognizer()
-        {
-        }
-
-        public UIImmediatePanGestureRecognizer(Action action) : base(action)
-        {
-        }
-
-        public UIImmediatePanGestureRecognizer(Action<UIPanGestureRecognizer> action) : base(action)
-        {
-        }
-
-        [Preserve]
-        protected internal UIImmediatePanGestureRecognizer(IntPtr handle) : base(handle)
-        {
-        }
-
-        public bool IsImmediate { get; set; } = false;
-        
-        public override void TouchesBegan(NSSet touches, UIEvent evt)
-        {
-            base.TouchesBegan(touches, evt);
-            if(IsImmediate)
-                State = UIGestureRecognizerState.Began;
-        }
-     }
-
-
     [Xamarin.Forms.Internals.Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
@@ -52,7 +20,9 @@ namespace Vapolia.Ios.Lib.Effects
         private readonly UILongPressGestureRecognizer longPressDetector;
         private readonly UISwipeGestureRecognizer swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector;
         private readonly UIImmediatePanGestureRecognizer panDetector;
+        private readonly UIPinchGestureRecognizer pinchDetector;
         private readonly List<UIGestureRecognizer> recognizers;
+        private (Point Origin0, Point Origin1) pinchOrigin;
 
         /// <summary>
         /// Take a Point parameter
@@ -65,6 +35,11 @@ namespace Vapolia.Ios.Lib.Effects
         /// </summary>
         private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
 
+        /// <summary>
+        /// 1 parameter: PinchEventArgs
+        /// </summary>
+        private ICommand pinchCommand;
+        
         private object commandParameter;
 
         public static void Init()
@@ -83,6 +58,7 @@ namespace Vapolia.Ios.Lib.Effects
             doubleTapDetector.NumberOfTapsRequired = 2;
             longPressDetector = CreateLongPressRecognizer(() => (longPressCommand, longPressPointCommand));
             panDetector = CreatePanRecognizer(() => (panCommand, panPointCommand));
+            pinchDetector = CreatePinchRecognizer(() => pinchCommand);
 
             swipeLeftDetector = CreateSwipeRecognizer(() => swipeLeftCommand, UISwipeGestureRecognizerDirection.Left);
             swipeRightDetector = CreateSwipeRecognizer(() => swipeRightCommand, UISwipeGestureRecognizerDirection.Right);
@@ -92,12 +68,12 @@ namespace Vapolia.Ios.Lib.Effects
 
             recognizers = new List<UIGestureRecognizer>
             {
-                tapDetector, doubleTapDetector, longPressDetector, panDetector,
+                tapDetector, doubleTapDetector, longPressDetector, panDetector, pinchDetector,
                 swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector
             };
         }
 
-        private UITapGestureRecognizer CreateTapRecognizer(Func<(ICommand Command,ICommand PointCommand)> getCommand)
+        private UITapGestureRecognizer CreateTapRecognizer(Func<(ICommand? Command,ICommand? PointCommand)> getCommand)
         {
             return new UITapGestureRecognizer(recognizer =>
             {
@@ -105,12 +81,11 @@ namespace Vapolia.Ios.Lib.Effects
                 if (command != null || pointCommand != null)
                 {
                     var control = Control ?? Container;
-                    var point = recognizer.LocationInView(control);
-                    var pt = new Point(point.X, point.Y);
+                    var point = recognizer.LocationInView(control).ToPoint();
                     if (command?.CanExecute(commandParameter) == true)
                         command.Execute(commandParameter);
-                    if(pointCommand?.CanExecute(pt) == true)
-                        pointCommand.Execute(pt);
+                    if(pointCommand?.CanExecute(point) == true)
+                        pointCommand.Execute(point);
                 }
             })
             {
@@ -120,7 +95,7 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
 
-        private UILongPressGestureRecognizer CreateLongPressRecognizer(Func<(ICommand Command, ICommand PointCommand)> getCommand)
+        private UILongPressGestureRecognizer CreateLongPressRecognizer(Func<(ICommand? Command, ICommand? PointCommand)> getCommand)
         {
             return new UILongPressGestureRecognizer(recognizer =>
             {
@@ -130,12 +105,11 @@ namespace Vapolia.Ios.Lib.Effects
                     if (command != null || pointCommand != null)
                     {
                         var control = Control ?? Container;
-                        var point = recognizer.LocationInView(control);
-                        var pt = new Point(point.X, point.Y);
+                        var point = recognizer.LocationInView(control).ToPoint();
                         if (command?.CanExecute(commandParameter) == true)
                             command.Execute(commandParameter);
-                        if (pointCommand?.CanExecute(pt) == true)
-                            pointCommand.Execute(pt);
+                        if (pointCommand?.CanExecute(point) == true)
+                            pointCommand.Execute(point);
                     }
                 }
             })
@@ -161,8 +135,47 @@ namespace Vapolia.Ios.Lib.Effects
                 Direction = direction
             };
         }
+        
+        private UIPinchGestureRecognizer CreatePinchRecognizer(Func<ICommand> getCommand)
+        {
+            return new UIPinchGestureRecognizer(recognizer =>
+            {
+                var command = getCommand();
+                if (command != null)
+                {
+                    var control = Control ?? Container;
+                    
+                    var current0 = pinchOrigin.Origin0;
+                    if(recognizer.NumberOfTouches>=1)
+                        current0 = recognizer.LocationOfTouch(0, control).ToPoint();
+                    var current1 = pinchOrigin.Origin1;
+                    if(recognizer.NumberOfTouches>=2)
+                        current1 = recognizer.LocationOfTouch(1, control).ToPoint();
 
-        private UIImmediatePanGestureRecognizer CreatePanRecognizer(Func<(ICommand Command, ICommand PointCommand)> getCommand)
+                    if (recognizer.State == UIGestureRecognizerState.Began)
+                        pinchOrigin = (current0, current1);
+                    
+                    var status = recognizer.State switch
+                    {
+                        UIGestureRecognizerState.Began => GestureStatus.Started,
+                        UIGestureRecognizerState.Changed => GestureStatus.Running,
+                        UIGestureRecognizerState.Ended => GestureStatus.Completed,
+                        UIGestureRecognizerState.Cancelled => GestureStatus.Canceled,
+                        _ => GestureStatus.Canceled,
+                    };
+
+                    var parameters = new PinchEventArgs(status, (current0, current1), pinchOrigin);
+                    if (command.CanExecute(parameters))
+                        command.Execute(parameters);
+                }
+            })
+            {
+                Enabled = false,
+                ShouldRecognizeSimultaneously = (recognizer, gestureRecognizer) => true,
+            };
+        }
+
+        private UIImmediatePanGestureRecognizer CreatePanRecognizer(Func<(ICommand? Command, ICommand? PointCommand)> getCommand)
         {
             return new UIImmediatePanGestureRecognizer(recognizer =>
             {
@@ -170,7 +183,7 @@ namespace Vapolia.Ios.Lib.Effects
                 if (command != null || pointCommand != null)
                 {
                     var control = Control ?? Container;
-                    var point = recognizer.LocationInView(control);
+                    var point = recognizer.LocationInView(control).ToPoint();
                     
                     if (command?.CanExecute(commandParameter) == true)
                         command.Execute(commandParameter);
@@ -186,7 +199,7 @@ namespace Vapolia.Ios.Lib.Effects
                             _ => GestureStatus.Canceled,
                         };
                         
-                        var parameters = (new Point(point.X, point.Y), gestureStatus);
+                        var parameters = (point, gestureStatus);
                         if (pointCommand.CanExecute(parameters))
                             pointCommand.Execute(parameters);
                     }
@@ -203,6 +216,7 @@ namespace Vapolia.Ios.Lib.Effects
         {
             tapCommand = Gesture.GetTapCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
+            pinchCommand = Gesture.GetPinchCommand(Element);
             panDetector.IsImmediate = Gesture.GetIsPanImmediate(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
             longPressCommand = Gesture.GetLongPressCommand(Element);

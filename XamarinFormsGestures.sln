@@ -17,11 +17,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp.Uwp", "Demo\DemoApp\DemoApp.Uwp\DemoApp.Uwp.csproj", "{4BD6C418-2F62-447A-AFB9-41C94F5A1F47}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{628B56E7-883E-411E-951D-344B4D18238E}"
-ProjectSection(SolutionItems) = preProject
-	LICENSE = LICENSE
-	pack.ps1 = pack.ps1
-	README.md = README.md
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		pack.ps1 = pack.ps1
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,8 +94,6 @@ Global
 		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|ARM.Build.0 = Debug|Any CPU
 		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|ARM.Deploy.0 = Debug|Any CPU
 		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|iPhone.Deploy.0 = Debug|Any CPU
 		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
 		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{B8EC1FC0-9D15-47C6-BBEA-A3B173CBC7B4}.Debug|x64.Build.0 = Debug|Any CPU
@@ -140,6 +138,7 @@ Global
 		{3C376C84-84E6-447D-A048-C5FAB00C6FAF}.Debug|ARM.ActiveCfg = Debug|iPhone
 		{3C376C84-84E6-447D-A048-C5FAB00C6FAF}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{3C376C84-84E6-447D-A048-C5FAB00C6FAF}.Debug|iPhone.Build.0 = Debug|iPhone
+		{3C376C84-84E6-447D-A048-C5FAB00C6FAF}.Debug|iPhone.Deploy.0 = Debug|iPhone
 		{3C376C84-84E6-447D-A048-C5FAB00C6FAF}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
 		{3C376C84-84E6-447D-A048-C5FAB00C6FAF}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
 		{3C376C84-84E6-447D-A048-C5FAB00C6FAF}.Debug|x64.ActiveCfg = Debug|iPhone

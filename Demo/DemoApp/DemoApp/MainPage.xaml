@@ -7,6 +7,13 @@
     xmlns:ui="clr-namespace:Vapolia.Lib.Ui;assembly=XamarinFormsGesture"
     x:DataType="local:MainPageViewModel"
     Title="Main Page">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="Black"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <StackLayout Spacing="20" Padding="20">
 

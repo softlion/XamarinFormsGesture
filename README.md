@@ -66,6 +66,7 @@ And in the viewmodel:
  *  `SwipeRightCommand`
  *  `SwipeTopCommand`
  *  `SwipeBottomCommand`
+ *  `PinchCommand` (Command<PinchEventArgs>) where PinchEventArgs contains StartingPoints, CurrentPoints, Center, Scale, Rotation (radians), Status
  
  Properties:
  
@@ -122,6 +123,7 @@ Only commands are supported (PR welcome for events). No .NET events.
 So you must use the MVVM pattern (https://developer.xamarin.com/guides/xamarin-forms/xaml/xaml-basics/data_bindings_to_mvvm/).
 
 Swipe commands are not supported on UWP due to a bug (event not received). If you find it, notify me!
+PinchCommand is not supported (yet) on UWP. PR welcome.
 
 If your command is not receiving events, make sure that:
 - you used the correct handler. Ie: the `LongPressPointCommand` should be `new Command<Point>(pt => ...)`

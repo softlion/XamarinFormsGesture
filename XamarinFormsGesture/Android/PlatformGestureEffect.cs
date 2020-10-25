@@ -164,9 +164,9 @@ namespace Vapolia.Droid.Lib.Effects
                             _ => GestureStatus.Canceled
                         };
 
-                        var commandParameter = new PinchEventArgs(status, (current0, current1), (origin0, origin1));
-                        if (pinchCommand.CanExecute(commandParameter))
-                            pinchCommand.Execute(commandParameter);
+                        var parameters = new PinchEventArgs(status, (current0, current1), (origin0, origin1));
+                        if (pinchCommand.CanExecute(parameters))
+                            pinchCommand.Execute(parameters);
                     }
                 },
                 LongPressAction = motionEvent =>
