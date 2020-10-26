@@ -31,7 +31,7 @@ namespace DemoApp
         public ICommand PinchCommand => new Command<PinchEventArgs>(args =>
         {
             Pinch = args.Center;
-            Rotation = args.Rotation * 180 / Math.PI;
+            Rotation = args.RotationDegrees;
             Scale = args.Scale;
         });
 
