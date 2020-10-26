@@ -20,9 +20,9 @@ namespace Vapolia.Ios.Lib.Effects
         private readonly UILongPressGestureRecognizer longPressDetector;
         private readonly UISwipeGestureRecognizer swipeLeftDetector, swipeRightDetector, swipeUpDetector, swipeDownDetector;
         private readonly UIImmediatePanGestureRecognizer panDetector;
-        private readonly UIPinchGestureRecognizer pinchDetector;
+        private readonly UIImmediatePinchGestureRecognizer pinchDetector;
         private readonly List<UIGestureRecognizer> recognizers;
-        private (Point Origin0, Point Origin1) pinchOrigin;
+        private (Point Origin0, Point Origin1) pinchOrigin, lastPinch;
 
         /// <summary>
         /// Take a Point parameter
@@ -136,22 +136,31 @@ namespace Vapolia.Ios.Lib.Effects
             };
         }
         
-        private UIPinchGestureRecognizer CreatePinchRecognizer(Func<ICommand> getCommand)
+        private UIImmediatePinchGestureRecognizer CreatePinchRecognizer(Func<ICommand> getCommand)
         {
-            return new UIPinchGestureRecognizer(recognizer =>
+            return new UIImmediatePinchGestureRecognizer(recognizer =>
             {
                 var command = getCommand();
                 if (command != null)
                 {
                     var control = Control ?? Container;
-                    
-                    var current0 = pinchOrigin.Origin0;
-                    if(recognizer.NumberOfTouches>=1)
-                        current0 = recognizer.LocationOfTouch(0, control).ToPoint();
-                    var current1 = pinchOrigin.Origin1;
-                    if(recognizer.NumberOfTouches>=2)
-                        current1 = recognizer.LocationOfTouch(1, control).ToPoint();
 
+                    if (recognizer.NumberOfTouches < 2)
+                    {
+                        if(recognizer.State != UIGestureRecognizerState.Cancelled && recognizer.State != UIGestureRecognizerState.Ended)
+                            return;
+                    }
+
+                    var current0 = lastPinch.Origin0;
+                    var current1 = lastPinch.Origin1;
+                    var lastCurrent0 = current0;
+                    var lastCurrent1 = current1;
+                    if (recognizer.NumberOfTouches >= 1)
+                        current0 = lastCurrent0 = recognizer.LocationOfTouch(0, control).ToPoint();
+                    if (recognizer.NumberOfTouches >= 2)
+                        current1 = lastCurrent1 = recognizer.LocationOfTouch(1, control).ToPoint();
+
+                    lastPinch = (lastCurrent0, lastCurrent1);
                     if (recognizer.State == UIGestureRecognizerState.Began)
                         pinchOrigin = (current0, current1);
                     
@@ -171,7 +180,7 @@ namespace Vapolia.Ios.Lib.Effects
             })
             {
                 Enabled = false,
-                ShouldRecognizeSimultaneously = (recognizer, gestureRecognizer) => true,
+                ShouldRecognizeSimultaneously = (recognizer, other) => true,
             };
         }
 
@@ -182,6 +191,9 @@ namespace Vapolia.Ios.Lib.Effects
                 var (command, pointCommand) = getCommand();
                 if (command != null || pointCommand != null)
                 {
+                    if (recognizer.NumberOfTouches > 1 && recognizer.State != UIGestureRecognizerState.Cancelled && recognizer.State != UIGestureRecognizerState.Ended)
+                        return;
+                    
                     var control = Control ?? Container;
                     var point = recognizer.LocationInView(control).ToPoint();
                     
@@ -207,7 +219,7 @@ namespace Vapolia.Ios.Lib.Effects
             })
             {
                 Enabled = false,
-                ShouldRecognizeSimultaneously = (recognizer, gestureRecognizer) => true,
+                ShouldRecognizeSimultaneously = (recognizer, other) => true,
                 MaximumNumberOfTouches = 1,
             };
         }
@@ -216,8 +228,9 @@ namespace Vapolia.Ios.Lib.Effects
         {
             tapCommand = Gesture.GetTapCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
-            pinchCommand = Gesture.GetPinchCommand(Element);
             panDetector.IsImmediate = Gesture.GetIsPanImmediate(Element);
+            pinchCommand = Gesture.GetPinchCommand(Element);
+            pinchDetector.IsImmediate = Gesture.GetIsPinchImmediate(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
             longPressCommand = Gesture.GetLongPressCommand(Element);
 

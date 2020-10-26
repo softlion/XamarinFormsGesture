@@ -201,6 +201,7 @@ namespace Vapolia.Droid.Lib.Effects
             tapCommand = Gesture.GetTapCommand(Element);
             panCommand = Gesture.GetPanCommand(Element);
             pinchCommand = Gesture.GetPinchCommand(Element);
+            tapDetector.IsPinchImmediate = Gesture.GetIsPinchImmediate(Element);
             tapDetector.IsPanImmediate = Gesture.GetIsPanImmediate(Element);
             doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
             longPressCommand = Gesture.GetLongPressCommand(Element);
@@ -256,6 +257,7 @@ namespace Vapolia.Droid.Lib.Effects
         {
             public int SwipeThresholdInPoints { get; set; }
             public bool IsPanImmediate { get; set; }
+            public bool IsPinchImmediate { get; set; }
 
             public Action<MotionEvent>? TapAction { get; set; }
             public Action<MotionEvent>? DoubleTapAction { get; set; }
@@ -291,6 +293,8 @@ namespace Vapolia.Droid.Lib.Effects
             {
                 if (e!=null && IsPanImmediate && e.PointerCount == 1)
                     PanAction?.Invoke(e, e);
+                if (e!=null && IsPinchImmediate && e.PointerCount == 2)
+                    PinchAction?.Invoke(e, e);
                 return false;
             }
 
