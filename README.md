@@ -66,7 +66,7 @@ And in the viewmodel:
  *  `SwipeRightCommand`
  *  `SwipeTopCommand`
  *  `SwipeBottomCommand`
- *  `PinchCommand (Command<PinchEventArgs>)` where PinchEventArgs contains StartingPoints, CurrentPoints, Center, Scale, Rotation (radians), Status
+ *  `PinchCommand (Command<PinchEventArgs>)` where `PinchEventArg` contains `StartingPoints`, `CurrentPoints`, `Center`, `Scale`, `RotationRadians`, `RotationDegrees`, `Status`
  
  Properties:
  
