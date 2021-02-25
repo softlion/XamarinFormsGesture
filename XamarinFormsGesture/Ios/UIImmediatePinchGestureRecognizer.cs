@@ -4,24 +4,24 @@ using UIKit;
 
 namespace Vapolia.Ios.Lib.Effects
 {
-    public class UIImmediatePanGestureRecognizer : UIPanGestureRecognizer
+    public class UIImmediatePinchGestureRecognizer : UIPinchGestureRecognizer
     {
         public bool IsImmediate { get; set; } = false;
 
-        public UIImmediatePanGestureRecognizer()
+        public UIImmediatePinchGestureRecognizer()
         {
         }
 
-        public UIImmediatePanGestureRecognizer(Action action) : base(action)
+        public UIImmediatePinchGestureRecognizer(Action action) : base(action)
         {
         }
 
-        public UIImmediatePanGestureRecognizer(Action<UIPanGestureRecognizer> action) : base(action)
+        public UIImmediatePinchGestureRecognizer(Action<UIPinchGestureRecognizer> action) : base(action)
         {
         }
 
         [Preserve]
-        protected internal UIImmediatePanGestureRecognizer(IntPtr handle) : base(handle)
+        protected internal UIImmediatePinchGestureRecognizer(IntPtr handle) : base(handle)
         {
         }
 

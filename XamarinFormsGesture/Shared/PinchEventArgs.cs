@@ -6,8 +6,8 @@ namespace Vapolia.Lib.Ui
     public class PinchEventArgs
     {
         public GestureStatus Status { get; }
-        (Point Point1, Point Point2) CurrentPoints { get; }
-        (Point Point1, Point Point2) StartingPoints { get; }
+        public (Point Point1, Point Point2) CurrentPoints { get; }
+        public (Point Point1, Point Point2) StartingPoints { get; }
         public Point Center { get; }
         public double Scale { get; }
         public double RotationRadians { get; }
@@ -24,7 +24,7 @@ namespace Vapolia.Lib.Ui
 
             var initialDistance = startingPoints.Point1.Distance2(startingPoints.Point2);
             var currentDistance = currentPoints.Point1.Distance2(currentPoints.Point2);
-            Scale = currentDistance/initialDistance;
+            Scale = initialDistance > double.Epsilon ? currentDistance/initialDistance : 1;
 
             RotationRadians = currentPoints.AngleWithHorizontal() - startingPoints.AngleWithHorizontal();
         }

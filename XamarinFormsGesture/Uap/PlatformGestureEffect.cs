@@ -62,7 +62,7 @@ namespace Vapolia.Uw.Lib.Effects
                     DraggingState.Completed => GestureStatus.Completed,
                     _ => GestureStatus.Canceled
                 };
-                var parameters = (new Point(args.Position.X, args.Position.Y), gestureStatus);
+                var parameters = new PanEventArgs(gestureStatus, new Point(args.Position.X, args.Position.Y));
                 TriggerCommand(panPointCommand, parameters);
             };
 

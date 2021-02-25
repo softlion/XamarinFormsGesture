@@ -31,7 +31,7 @@ namespace Vapolia.Droid.Lib.Effects
 
         /// <summary>
         /// Take a Point parameter
-        /// Except panPointCommand which takes a (Point,GestureStatus) parameter (its a tuple) 
+        /// Except panPointCommand which takes a PanEventArgs parameter 
         /// </summary>
         private ICommand? tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
         
@@ -118,13 +118,12 @@ namespace Vapolia.Droid.Lib.Effects
                 },
                 PanAction = (initialDown, currentMove) =>
                 {
+                    var continueGesture = true;
+                    
                     if (panPointCommand != null)
                     {
-                        // var x0 = initialDown.GetX();
-                        // var y0 = initialDown.GetY();
                         var x = currentMove.GetX();
                         var y = currentMove.GetY();
-                        // var point = PxToDp(new Point(x-x0, y-y0));
                         var point = PxToDp(new Point(x, y));
 
                         var status = currentMove.Action switch
@@ -136,15 +135,19 @@ namespace Vapolia.Droid.Lib.Effects
                             _ => GestureStatus.Canceled
                         };
 
-                        var parameter = (point,status);
+                        var parameter = new PanEventArgs(status,point);
                         if (panPointCommand.CanExecute(parameter))
                             panPointCommand.Execute(parameter);
+                        if (parameter.CancelGesture)
+                            continueGesture = false;
                     }
 
                     if (panCommand != null) {
                         if (panCommand.CanExecute(commandParameter))
                             panCommand.Execute(commandParameter);
                     }
+
+                    return continueGesture;
                 },
                 PinchAction = (initialDown, currentMove) =>
                 {
@@ -265,7 +268,7 @@ namespace Vapolia.Droid.Lib.Effects
             public Action<MotionEvent>? SwipeRightAction { get; set; }
             public Action<MotionEvent>? SwipeTopAction { get; set; }
             public Action<MotionEvent>? SwipeBottomAction { get; set; }
-            public Action<MotionEvent, MotionEvent>? PanAction { get; set; }
+            public Func<MotionEvent, MotionEvent, bool>? PanAction { get; set; }
             public Action<MotionEvent, MotionEvent>? PinchAction { get; set; }
             public Action<MotionEvent>? LongPressAction { get; set; }
 
@@ -291,10 +294,15 @@ namespace Vapolia.Droid.Lib.Effects
 
             public override bool OnDown(MotionEvent? e)
             {
-                if (e!=null && IsPanImmediate && e.PointerCount == 1)
-                    PanAction?.Invoke(e, e);
-                if (e!=null && IsPinchImmediate && e.PointerCount == 2)
+                if (e!=null && IsPanImmediate && e.PointerCount == 1 && PanAction != null)
+                    return PanAction.Invoke(e, e);
+
+                if (e != null && IsPinchImmediate && e.PointerCount == 2 && PinchAction != null)
+                {
                     PinchAction?.Invoke(e, e);
+                    return true;
+                }
+
                 return false;
             }
 
@@ -302,12 +310,16 @@ namespace Vapolia.Droid.Lib.Effects
             {
                 if (initialDown != null)
                 {
-                    if(initialDown.PointerCount == 1)
-                        PanAction?.Invoke(initialDown, currentMove);
-                    else if(initialDown.PointerCount == 2)
-                        PinchAction?.Invoke(initialDown, currentMove);
+                    if(initialDown.PointerCount == 1 && PanAction != null)
+                        return PanAction.Invoke(initialDown, currentMove);
+
+                    if (initialDown.PointerCount == 2 && PinchAction != null)
+                    {
+                        PinchAction.Invoke(initialDown, currentMove);
+                        return true;
+                    }
                 }
-                return true;
+                return false;
             }
 
             public override bool OnFling(MotionEvent? e1, MotionEvent? e2, float velocityX, float velocityY)

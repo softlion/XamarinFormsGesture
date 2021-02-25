@@ -147,9 +147,12 @@ namespace Vapolia.Ios.Lib.Effects
 
                     if (recognizer.NumberOfTouches < 2)
                     {
-                        if(recognizer.State != UIGestureRecognizerState.Cancelled && recognizer.State != UIGestureRecognizerState.Ended)
+                        if(recognizer.State == UIGestureRecognizerState.Changed)
                             return;
                     }
+                    
+                    if(recognizer.State == UIGestureRecognizerState.Began)
+                        lastPinch = (Point.Zero, Point.Zero);
 
                     var current0 = lastPinch.Origin0;
                     var current1 = lastPinch.Origin1;
@@ -159,7 +162,9 @@ namespace Vapolia.Ios.Lib.Effects
                         current0 = lastCurrent0 = recognizer.LocationOfTouch(0, control).ToPoint();
                     if (recognizer.NumberOfTouches >= 2)
                         current1 = lastCurrent1 = recognizer.LocationOfTouch(1, control).ToPoint();
-
+                    else if (recognizer.State == UIGestureRecognizerState.Began)
+                        current1 = lastCurrent1 = current0;
+                    
                     lastPinch = (lastCurrent0, lastCurrent1);
                     if (recognizer.State == UIGestureRecognizerState.Began)
                         pinchOrigin = (current0, current1);
@@ -200,8 +205,10 @@ namespace Vapolia.Ios.Lib.Effects
                     if (command?.CanExecute(commandParameter) == true)
                         command.Execute(commandParameter);
 
-                    if (pointCommand != null)
+                    if (pointCommand != null && recognizer.State != UIGestureRecognizerState.Began)
                     {
+                        //GestureStatus.Started has already been sent by ShouldBegin. Don't sent it twice.
+
                         var gestureStatus = recognizer.State switch
                         {
                             UIGestureRecognizerState.Began => GestureStatus.Started,
@@ -211,9 +218,9 @@ namespace Vapolia.Ios.Lib.Effects
                             _ => GestureStatus.Canceled,
                         };
                         
-                        var parameters = (point, gestureStatus);
-                        if (pointCommand.CanExecute(parameters))
-                            pointCommand.Execute(parameters);
+                        var parameter = new PanEventArgs(gestureStatus, point);
+                        if (pointCommand.CanExecute(parameter))
+                            pointCommand.Execute(parameter);
                     }
                 }
             })
@@ -221,6 +228,30 @@ namespace Vapolia.Ios.Lib.Effects
                 Enabled = false,
                 ShouldRecognizeSimultaneously = (recognizer, other) => true,
                 MaximumNumberOfTouches = 1,
+                ShouldBegin = recognizer =>
+                {
+                    var (command, pointCommand) = getCommand();
+                    if (command != null)
+                    {
+                        if (command.CanExecute(commandParameter))
+                            command.Execute(commandParameter);
+                        return true;
+                    }
+                            
+                    if(pointCommand != null)
+                    {
+                        var control = Control ?? Container;
+                        var point = recognizer.LocationInView(control).ToPoint();
+
+                        var parameter = new PanEventArgs(GestureStatus.Started, point);
+                        if (pointCommand.CanExecute(parameter))
+                            pointCommand.Execute(parameter);
+                        if (!parameter.CancelGesture)
+                            return true;
+                    }
+
+                    return false;
+                }
             };
         }
 

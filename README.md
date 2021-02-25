@@ -106,7 +106,7 @@ public ICommand OpenPointCommand => new Command<Point>(point =>
     //...
 });
 
-public ICommand PanPointCommand => new Command<(Point Point,GestureStatus Status)>(args =>
+public ICommand PanPointCommand => new Command<PanEventArgs>(args =>
 {
     var point = args.Point;
     PanX = point.X;
@@ -135,4 +135,4 @@ UWP requires fall creator update
 
 Version 3.3.0 has breaking changes:  
 - Command names have changed
-- PanPointCommand returns an absolute position, not a relative position anymore. It also returns the gesture state.
+- PanPointCommand returns an absolute position, not a relative position anymore. It also returns the gesture state. The gesture can also be cancelled.
