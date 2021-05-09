@@ -22,7 +22,7 @@ namespace DemoApp
         }
 
         
-        public ICommand PanPointCommand => new Command<(Point Point,GestureStatus Status)>(args =>
+        public ICommand PanPointCommand => new Command<PanEventArgs>(args =>
         {
             var point = args.Point;
             Pan = point;
