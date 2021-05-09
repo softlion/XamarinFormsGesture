@@ -60,7 +60,7 @@ And in the viewmodel:
  *  `LongPressCommand (ICommand)`
  *  `TapPointCommand (ICommand or Command<Point>)` where point is the absolute tap position relative to the view
  *  `DoubleTapPoinCommand (ICommand or Command<Point>)` where point is the absolute double tap position relative to the view
- *  `PanPointCommand (ICommand or Command<(Point,GestureStatus)>)` where point is the absolute position relative to the view
+ *  `PanPointCommand (ICommand or Command<PanEventArgs>)` where point is the absolute position relative to the view
  *  `LongPressPointCommand (ICommand or Command<Point>) ` where point is the absolute tap position relative to the view
  *  `SwipeLeftCommand`
  *  `SwipeRightCommand`
