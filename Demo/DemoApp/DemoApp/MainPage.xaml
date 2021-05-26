@@ -37,6 +37,7 @@
         <StackLayout>
             <Label Text="5.Drag a finger in this space" />
             <BoxView
+                ui:Gesture.IsPanImmediate="True"
                 ui:Gesture.PanPointCommand="{Binding PanPointCommand}"
                 BackgroundColor="Yellow"
                 HeightRequest="100"
@@ -47,10 +48,12 @@
                 <Label>
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="dX;dY: " />
-                            <Span Text="{Binding Pan.X}" />
-                            <Span Text=" ; " />
-                            <Span Text="{Binding Pan.Y}" />
+                            <Span Text="dX: " />
+                            <Span Text="{Binding Pan.X,StringFormat='{0:0.##}'}" />
+                            <Span Text=" / dY: " />
+                            <Span Text="{Binding Pan.Y,StringFormat='{0:0.##}'}" />
+                            <Span Text=" / Event: " />
+                            <Span Text="{Binding PanStatus}" />
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>

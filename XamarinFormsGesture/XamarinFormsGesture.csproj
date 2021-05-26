@@ -9,6 +9,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
   <ItemGroup>
       <PackageReference Include="Xamarin.Forms" Version="4.5.0.356" />
       <Compile Include="Shared\**\*.cs" />
@@ -30,7 +34,6 @@
     <Version>0.0.0-pre1</Version>
     <VersionSuffix></VersionSuffix>
     <DefineConstants>$(DefineConstants);</DefineConstants>
-    <NugetPackageId></NugetPackageId>
   </PropertyGroup>
 
   <!--  nuget properties -->
@@ -42,7 +45,6 @@
     <Title>Gestures support for Xamarin.Forms (ios, android, UWP)</Title>
     <Description>Bring all platform gestures to Xamarin Forms on Android and iOS. Add this nuget to your Netstandard, Android, iOS and UWP projects.</Description>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <VersionSuffix></VersionSuffix>
     <PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
     <Authors>Benjamin Mayrargue</Authors>
     <Owners>Benjamin Mayrargue</Owners>

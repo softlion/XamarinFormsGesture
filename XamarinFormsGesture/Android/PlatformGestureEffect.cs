@@ -10,12 +10,6 @@ using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 using View = Android.Views.View;
 
-#if MONOANDROID90
-using Android.Support.V4.View;
-#else
-using AndroidX.Core.View;
-#endif
-
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
 
@@ -24,7 +18,7 @@ namespace Vapolia.Droid.Lib.Effects
     [Preserve (Conditional=true, AllMembers = true)]
     public class PlatformGestureEffect : PlatformEffect
     {
-        private GestureDetectorCompat? gestureRecognizer;
+        private GestureDetector? gestureRecognizer;
         private readonly InternalGestureDetector tapDetector;
         private DisplayMetrics displayMetrics;
         private object commandParameter;
@@ -232,7 +226,7 @@ namespace Vapolia.Droid.Lib.Effects
             tapDetector.Density = displayMetrics.Density;
 
             if (gestureRecognizer == null)
-                gestureRecognizer = new GestureDetectorCompat(context, tapDetector);
+                gestureRecognizer = new ExtendedGestureDetector(context, tapDetector);
             control.Touch += ControlOnTouch;
             control.Clickable = true;
 
@@ -256,8 +250,37 @@ namespace Vapolia.Droid.Lib.Effects
             displayMetrics = null;
         }
 
-        sealed class InternalGestureDetector : GestureDetector.SimpleOnGestureListener
+        sealed class ExtendedGestureDetector : GestureDetector
         {
+            IExtendedGestureListener? myGestureListener;
+
+            [Preserve]
+            protected ExtendedGestureDetector(IntPtr javaRef, Android.Runtime.JniHandleOwnership transfert) : base(javaRef, transfert)
+            { 
+            }
+
+            public ExtendedGestureDetector(Android.Content.Context context, GestureDetector.IOnGestureListener listener) : base(context, listener)
+            { 
+                if (listener is IExtendedGestureListener my)
+                    myGestureListener = my;
+            }
+
+            public override bool OnTouchEvent(MotionEvent? e)
+            {
+                if (myGestureListener != null && e?.Action == MotionEventActions.Up)
+                    myGestureListener.OnUp(e);
+                return base.OnTouchEvent(e);
+            }
+        }
+
+
+        interface IExtendedGestureListener
+        {
+            void OnUp(MotionEvent? e);
+        }
+
+        sealed class InternalGestureDetector : GestureDetector.SimpleOnGestureListener, IExtendedGestureListener
+{
             public int SwipeThresholdInPoints { get; set; }
             public bool IsPanImmediate { get; set; }
             public bool IsPinchImmediate { get; set; }
@@ -306,6 +329,13 @@ namespace Vapolia.Droid.Lib.Effects
                 return false;
             }
 
+            public void OnUp(MotionEvent? e)
+            {
+                if(e != null)
+                    PanAction?.Invoke(e, e);
+            }
+
+
             public override bool OnScroll(MotionEvent? initialDown, MotionEvent? currentMove, float distanceX, float distanceY)
             {
                 if (initialDown != null)
@@ -326,7 +356,7 @@ namespace Vapolia.Droid.Lib.Effects
             {
                 if (e1 == null || e2 == null)
                     return false;
-                
+
                 var dx = e2.RawX - e1.RawX;
                 var dy = e2.RawY - e1.RawY;
                 if (Math.Abs(dx) > SwipeThresholdInPoints * Density)
