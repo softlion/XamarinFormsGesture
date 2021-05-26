@@ -324,6 +324,9 @@ namespace Vapolia.Droid.Lib.Effects
 
             public override bool OnFling(MotionEvent? e1, MotionEvent? e2, float velocityX, float velocityY)
             {
+                if (e1 == null || e2 == null)
+                    return false;
+                
                 var dx = e2.RawX - e1.RawX;
                 var dy = e2.RawY - e1.RawY;
                 if (Math.Abs(dx) > SwipeThresholdInPoints * Density)
