@@ -74,6 +74,8 @@ And in the viewmodel:
  
 # Examples
 
+## Somme commands in XAML
+
 ```xml
 <StackLayout ui:Gesture.TapCommand="{Binding OpenCommand}" IsEnabled="True">
     <Label Text="1.Tap this text to open an url" />
@@ -115,6 +117,19 @@ public ICommand PanPointCommand => new Command<PanEventArgs>(args =>
 });
 
 ``` 
+
+## Exemple in C# on a Grid containing an horizontal slider (set value on tap)
+
+```csharp
+//Tap anywhere to set value
+Gesture.SetTapPointCommand(this, new Command<Point>(pt =>
+{
+    var delta = (pt.X - Padding.Left) / (Width - Padding.Left - Padding.Right);
+    if(delta<0 || delta>1)
+        return;
+    Value = (int)Math.Round((Maximum - Minimum) * delta);
+}));
+```
         
 
 # Limitations
