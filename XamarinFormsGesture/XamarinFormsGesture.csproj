@@ -56,6 +56,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://vapolia.eu</PackageProjectUrl>
     <PackageReleaseNotes>
+      3.3.2: #31
       3.3.0: breaking changes. All commands with a point parameter now have "Point" in their names. More gestures have a Point version.
       3.2.0: xamarin forms 4. Switch to a multi targeting project.
       3.1.0: xamarin forms 3.6. Double tap command.

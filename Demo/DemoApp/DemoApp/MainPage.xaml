@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:DemoApp"
     xmlns:ui="clr-namespace:Vapolia.Lib.Ui;assembly=XamarinFormsGesture"
     x:DataType="local:MainPageViewModel"
+    BackgroundColor="AntiqueWhite"
     Title="Main Page">
     <ContentPage.Resources>
         <ResourceDictionary>
