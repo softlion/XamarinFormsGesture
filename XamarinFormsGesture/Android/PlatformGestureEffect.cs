@@ -280,7 +280,9 @@ namespace Vapolia.Droid.Lib.Effects
         }
 
         sealed class InternalGestureDetector : GestureDetector.SimpleOnGestureListener, IExtendedGestureListener
-{
+        {
+            private MotionEvent? pinchInitialDown;
+
             public int SwipeThresholdInPoints { get; set; }
             public bool IsPanImmediate { get; set; }
             public bool IsPinchImmediate { get; set; }
@@ -291,8 +293,8 @@ namespace Vapolia.Droid.Lib.Effects
             public Action<MotionEvent>? SwipeRightAction { get; set; }
             public Action<MotionEvent>? SwipeTopAction { get; set; }
             public Action<MotionEvent>? SwipeBottomAction { get; set; }
-            public Func<MotionEvent, MotionEvent, bool>? PanAction { get; set; }
-            public Action<MotionEvent, MotionEvent>? PinchAction { get; set; }
+            public Func<MotionEvent, MotionEvent?, bool>? PanAction { get; set; }
+            public Action<MotionEvent, MotionEvent?>? PinchAction { get; set; }
             public Action<MotionEvent>? LongPressAction { get; set; }
 
             public float Density { get; set; }
@@ -333,19 +335,24 @@ namespace Vapolia.Droid.Lib.Effects
             {
                 if(e != null)
                     PanAction?.Invoke(e, e);
+                
+                pinchInitialDown = null;
             }
-
 
             public override bool OnScroll(MotionEvent? initialDown, MotionEvent? currentMove, float distanceX, float distanceY)
             {
-                if (initialDown != null)
+                if (initialDown != null && currentMove != null)
                 {
-                    if(initialDown.PointerCount == 1 && PanAction != null)
+                    //Switch to pinch
+                    if (pinchInitialDown == null && initialDown.PointerCount == 1 && currentMove.PointerCount == 2)
+                        pinchInitialDown = MotionEvent.Obtain(currentMove);
+                    
+                    if(currentMove.PointerCount == 1 && PanAction != null)
                         return PanAction.Invoke(initialDown, currentMove);
 
-                    if (initialDown.PointerCount == 2 && PinchAction != null)
+                    if (currentMove.PointerCount == 2 && PinchAction != null && pinchInitialDown != null)
                     {
-                        PinchAction.Invoke(initialDown, currentMove);
+                        PinchAction.Invoke(pinchInitialDown, currentMove);
                         return true;
                     }
                 }
