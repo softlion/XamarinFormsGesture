@@ -37,12 +37,12 @@
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
     <DefineConstants>$(DefineConstants);IOS</DefineConstants>
   </PropertyGroup>
-<!--  <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">-->
-<!--    <DefineConstants>$(DefineConstants);ANDROID</DefineConstants>-->
-<!--  </PropertyGroup>-->
-<!--  <PropertyGroup Condition=" $(TargetFramework.StartsWith('uap')) ">-->
-<!--    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>-->
-<!--  </PropertyGroup>-->
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
+    <DefineConstants>$(DefineConstants);ANDROID</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('uap')) ">
+    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+  </PropertyGroup>
   
   <!--  nuget configurable properties -->
   <PropertyGroup>
@@ -71,6 +71,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://vapolia.eu</PackageProjectUrl>
     <PackageReleaseNotes>
+      3.3.4: Add new Element extensions
       3.3.3: Android 13+. Xamarin Forms 5+. Breaking changes: see readme.
       3.3.2: #31
       3.3.0: breaking changes. All commands with a point parameter now have "Point" in their names. More gestures have a Point version.

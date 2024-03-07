@@ -1,6 +1,11 @@
+using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using Vapolia.Lib.Ui;
+
+#if IOS
+using Xamarin.Forms.Platform.iOS;
+#endif
 
 namespace Vapolia.Lib.Effects;
 

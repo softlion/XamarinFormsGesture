@@ -8,7 +8,7 @@ if ($IsMacOS) {
 
 #####################
 #Build release config
-$version="3.3.3"
+$version="3.3.4"
 $versionSuffix=""
 $nugetVersion="$version$versionSuffix"
 #$versionSuffix=".$env:BUILD_NUMBER" 
