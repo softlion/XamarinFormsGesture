@@ -21,7 +21,7 @@ namespace DemoApp.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            Vapolia.Ios.Lib.Effects.PlatformGestureEffect.Init();
+            Vapolia.Lib.Effects.PlatformGestureEffect.Init();
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 

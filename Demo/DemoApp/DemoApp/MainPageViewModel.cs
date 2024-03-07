@@ -48,9 +48,9 @@ namespace DemoApp
         });
 
         
-        public ICommand OpenVapoliaPointCommand => new Command<Point>(point =>
+        public ICommand OpenVapoliaPointCommand => new Command<PointEventArgs>(point =>
         {
-            Pan = point;
+            Pan = point.Point;
             OpenVapoliaCommand.Execute(null);
         });
     }

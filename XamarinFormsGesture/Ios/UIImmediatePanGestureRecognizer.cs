@@ -2,9 +2,9 @@
 using Foundation;
 using UIKit;
 
-namespace Vapolia.Ios.Lib.Effects
+namespace Vapolia.Lib.Effects
 {
-    public class UIImmediatePanGestureRecognizer : UIPanGestureRecognizer
+    internal class UIImmediatePanGestureRecognizer : UIPanGestureRecognizer
     {
         public bool IsImmediate { get; set; } = false;
 

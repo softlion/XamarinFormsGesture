@@ -1,8 +1,8 @@
 ﻿using System;
 using Xamarin.Forms;
 
-namespace Vapolia.Lib.Ui
-{
+namespace Vapolia.Lib.Ui;
+
     public class PinchEventArgs
     {
         public GestureStatus Status { get; }
@@ -29,4 +29,4 @@ namespace Vapolia.Lib.Ui
             RotationRadians = currentPoints.AngleWithHorizontal() - startingPoints.AngleWithHorizontal();
         }
     }
-}
+

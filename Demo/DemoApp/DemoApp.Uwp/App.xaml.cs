@@ -43,7 +43,7 @@ namespace DemoApp.Uwp
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                Vapolia.Uw.Lib.Effects.PlatformGestureEffect.Init();
+                Vapolia.Lib.Effects.PlatformGestureEffect.Init();
                 Xamarin.Forms.Forms.Init(e);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)

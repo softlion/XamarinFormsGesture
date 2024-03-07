@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;Xamarin.iOS10;MonoAndroid90;MonoAndroid10.0;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;Xamarin.iOS10;MonoAndroid13.0;</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);uap10.0.17763;</TargetFrameworks>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <DebugType>portable</DebugType>
@@ -14,21 +14,36 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="Xamarin.Forms" Version="4.5.0.356" />
-      <Compile Include="Shared\**\*.cs" />
+      <PackageReference Include="Xamarin.Forms" Version="5.0.0.2622" />
+      <Compile Include="Netstandard\**\*.cs" />
       <None Include="..\\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <Compile Include="Android\**\*.cs" />
+    <Compile Include="Shared\**\*.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
     <Compile Include="Ios\**\*.cs" />
+      <Compile Include="Shared\**\*.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('uap')) ">
       <Compile Include="Uap\**\*.cs" />
+      <Compile Include="Shared\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.17763'">
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
   </ItemGroup>
 
-
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
+    <DefineConstants>$(DefineConstants);IOS</DefineConstants>
+  </PropertyGroup>
+<!--  <PropertyGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">-->
+<!--    <DefineConstants>$(DefineConstants);ANDROID</DefineConstants>-->
+<!--  </PropertyGroup>-->
+<!--  <PropertyGroup Condition=" $(TargetFramework.StartsWith('uap')) ">-->
+<!--    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>-->
+<!--  </PropertyGroup>-->
+  
   <!--  nuget configurable properties -->
   <PropertyGroup>
     <Version>0.0.0-pre1</Version>
@@ -56,6 +71,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://vapolia.eu</PackageProjectUrl>
     <PackageReleaseNotes>
+      3.3.3: Android 13+. Xamarin Forms 5+. Breaking changes: see readme.
       3.3.2: #31
       3.3.0: breaking changes. All commands with a point parameter now have "Point" in their names. More gestures have a Point version.
       3.2.0: xamarin forms 4. Switch to a multi targeting project.

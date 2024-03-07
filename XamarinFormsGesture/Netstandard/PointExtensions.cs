@@ -3,7 +3,7 @@ using Xamarin.Forms;
 
 namespace Vapolia.Lib.Ui
 {
-    public static class PointExtensions
+    internal static class PointExtensions
     {
         public static Point Add(this Point pt1, Point pt2)
             => new Point(pt1.X + pt2.X, pt1.Y + pt2.Y);

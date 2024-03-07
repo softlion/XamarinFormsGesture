@@ -15,7 +15,7 @@ namespace DemoApp.Droid
         {
             base.OnCreate(bundle);
 
-            Vapolia.Droid.Lib.Effects.PlatformGestureEffect.Init();
+            Vapolia.Lib.Effects.PlatformGestureEffect.Init();
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App());
         }

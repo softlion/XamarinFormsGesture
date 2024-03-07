@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
-using Vapolia.Uw.Lib.Effects;
+using Vapolia.Lib.Effects;
 using Vapolia.Lib.Ui;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -12,25 +12,13 @@ using Xamarin.Forms.Platform.UWP;
 [assembly: ResolutionGroupName("Vapolia")]
 [assembly: ExportEffect(typeof(PlatformGestureEffect), nameof(PlatformGestureEffect))]
 
-namespace Vapolia.Uw.Lib.Effects
+namespace Vapolia.Lib.Effects
 {
     [Preserve (Conditional=true, AllMembers = true)]
-    public class PlatformGestureEffect : PlatformEffect
+    public partial class PlatformGestureEffect : PlatformEffect
     {
         readonly Windows.UI.Input.GestureRecognizer detector;
         int swipeThresholdInPoints = 40;
-        private object commandParameter;
-        
-        /// <summary>
-        /// Take a Point parameter
-        /// Except panPointCommand which takes a (Point,GestureStatus) parameter (its a tuple) 
-        /// </summary>
-        private ICommand tapPointCommand, panPointCommand, doubleTapPointCommand, longPressPointCommand;
-        
-        /// <summary>
-        /// No parameter
-        /// </summary>
-        private ICommand tapCommand, panCommand, doubleTapCommand, longPressCommand, swipeLeftCommand, swipeRightCommand, swipeTopCommand, swipeBottomCommand;
         
         public static void Init()
         {
@@ -38,7 +26,7 @@ namespace Vapolia.Uw.Lib.Effects
 
         public PlatformGestureEffect()
         {
-            detector = new Windows.UI.Input.GestureRecognizer
+        detector = new()
             {
                 GestureSettings = 
                     GestureSettings.Tap 
@@ -71,12 +59,14 @@ namespace Vapolia.Uw.Lib.Effects
                 if (args.TapCount == 1)
                 {
                     TriggerCommand(tapCommand, commandParameter);
-                    TriggerCommand(tapPointCommand, new Point(args.Position.X, args.Position.Y));
+                var pointArgs = new PointEventArgs(new Point(args.Position.X, args.Position.Y), Element, Element.BindingContext);
+                TriggerCommand(tapPointCommand, pointArgs);
                 }
                 else if (args.TapCount == 2) 
                 {
                     TriggerCommand(doubleTapCommand, commandParameter);
-                    TriggerCommand(doubleTapPointCommand, new Point(args.Position.X, args.Position.Y));
+                var pointArgs = new PointEventArgs(new Point(args.Position.X, args.Position.Y), Element, Element.BindingContext);
+                TriggerCommand(doubleTapPointCommand, pointArgs);
                 }
             };
 
@@ -85,7 +75,8 @@ namespace Vapolia.Uw.Lib.Effects
                 if(args.HoldingState == HoldingState.Started) 
                 {
                     TriggerCommand(longPressCommand, commandParameter);
-                    TriggerCommand(longPressPointCommand, new Point(args.Position.X, args.Position.Y));
+                var pointArgs = new PointEventArgs(new Point(args.Position.X, args.Position.Y), Element, Element.BindingContext);
+                TriggerCommand(longPressPointCommand, pointArgs);
                 }
             };
 
@@ -115,34 +106,13 @@ namespace Vapolia.Uw.Lib.Effects
             //};
         }
 
-        private void TriggerCommand(ICommand command, object parameter)
+    private void TriggerCommand(ICommand? command, object? parameter)
         {
             if(command?.CanExecute(parameter) == true)
                 command.Execute(parameter);
         }
 
-        protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)
-        {
-            tapCommand = Gesture.GetTapCommand(Element);
-            panCommand = Gesture.GetPanCommand(Element);
-            doubleTapCommand = Gesture.GetDoubleTapCommand(Element);
-            longPressCommand = Gesture.GetLongPressCommand(Element);
-
-            swipeLeftCommand = Gesture.GetSwipeLeftCommand(Element);
-            swipeRightCommand = Gesture.GetSwipeRightCommand(Element);
-            swipeTopCommand = Gesture.GetSwipeTopCommand(Element);
-            swipeBottomCommand = Gesture.GetSwipeBottomCommand(Element);
-
-            tapPointCommand = Gesture.GetTapPointCommand(Element);
-            panPointCommand = Gesture.GetPanPointCommand(Element);
-            doubleTapPointCommand = Gesture.GetDoubleTapPointCommand(Element);
-            longPressPointCommand = Gesture.GetLongPressPointCommand(Element);
-
-            swipeThresholdInPoints = Gesture.GetSwipeThreshold(Element);
-            commandParameter = Gesture.GetCommandParameter(Element);
-        }
-
-        protected override void OnAttached()
+    protected override void OnAttached()
         {
             var control = Control ?? Container;
 
@@ -157,7 +127,7 @@ namespace Vapolia.Uw.Lib.Effects
             OnElementPropertyChanged(new PropertyChangedEventArgs(String.Empty));
         }
 
-        protected override void OnDetached()
+    protected override void OnDetached()
         {
             var control = Control ?? Container;
             control.PointerMoved -= ControlOnPointerMoved;

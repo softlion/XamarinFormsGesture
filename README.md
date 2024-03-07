@@ -25,7 +25,7 @@ Or in code:
 # Quick start
 Add the above nuget package to your Xamarin Forms project (only the netstandard one is enough).
 
-In your platform projects (android,ios,uwp), before initializing xamarin forms, call `PlatformGestureEffect.Init()` to force the discovery of this extension by the Xamarin Forms plugin engine.
+In your platform projects (android,ios,uwp), before initializing xamarin forms, call `Vapolia.Lib.Effects.PlatformGestureEffect.Init();` to force the discovery of this extension by the Xamarin Forms plugin engine.
 
 The views on which the gesture is applied should have the property **IsEnabled="True"** and **InputTransparent="False"** which activates user interaction on them.
 
@@ -101,7 +101,7 @@ public ICommand OpenCommand => new Command(async () =>
    //...
 });
 
-public ICommand OpenPointCommand => new Command<Point>(point =>
+public ICommand OpenPointCommand => new Command<PointEventArgs>(point =>
 {
     PanX = point.X;
     PanY = point.Y;
@@ -122,7 +122,7 @@ public ICommand PanPointCommand => new Command<PanEventArgs>(args =>
 
 ```csharp
 //Tap anywhere to set value
-Gesture.SetTapPointCommand(this, new Command<Point>(pt =>
+Gesture.SetTapPointCommand(this, new Command<PointEventArgs>(pt =>
 {
     var delta = (pt.X - Padding.Left) / (Width - Padding.Left - Padding.Right);
     if(delta<0 || delta>1)
@@ -141,12 +141,16 @@ Swipe commands are not supported on UWP due to a bug (event not received). If yo
 PinchCommand is not supported (yet) on UWP. PR welcome.
 
 If your command is not receiving events, make sure that:
-- you used the correct handler. Ie: the `LongPressPointCommand` should be `new Command<Point>(pt => ...)`
+- you used the correct handler. Ie: the `LongPressPointCommand` should be `new Command<PointEventArgs>(pt => ...)`
 - you set IsEnabled="True" and InputTransparent="False" on the element
 
 UWP requires fall creator update  
 
 # Breaking changes
+
+Version 3.3.3 has breaking changes:
+- Point commands now gives a `PointEventArgs` instead of a Point. ie: `Command<PointEventArgs>`
+- Initialization namespace is unified across platforms: `Vapolia.Lib.Effects.PlatformGestureEffect.Init();`
 
 Version 3.3.0 has breaking changes:  
 - Command names have changed

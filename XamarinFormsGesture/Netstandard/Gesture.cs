@@ -115,15 +115,14 @@ namespace Vapolia.Lib.Ui
         public static object GetCommandParameter(BindableObject view) => view.GetValue(CommandParameterProperty);
         public static void SetCommandParameter(BindableObject view, object value) => view.SetValue(CommandParameterProperty, value);
 
-        private static GestureEffect GetOrCreateEffect(View view)
+        private static void GetOrCreateEffect(View view)
         {
-            var effect = (GestureEffect)view.Effects.FirstOrDefault(e => e is GestureEffect);
+            var effect = (GestureEffect?)view.Effects.FirstOrDefault(e => e is GestureEffect);
             if (effect == null)
             {
-                effect = new GestureEffect();
+                effect = new ();
                 view.Effects.Add(effect);
             }
-            return effect;
         }
 
         private static void CommandChanged(BindableObject bindable, object oldValue, object newValue)

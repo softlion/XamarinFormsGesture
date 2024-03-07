@@ -2,9 +2,9 @@
 using Foundation;
 using UIKit;
 
-namespace Vapolia.Ios.Lib.Effects
+namespace Vapolia.Lib.Effects
 {
-    public class UIImmediatePinchGestureRecognizer : UIPinchGestureRecognizer
+    internal class UIImmediatePinchGestureRecognizer : UIPinchGestureRecognizer
     {
         public bool IsImmediate { get; set; } = false;
 
