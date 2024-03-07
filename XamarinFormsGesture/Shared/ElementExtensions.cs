@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Vapolia.Lib.Ui;
 using Xamarin.Forms;
 
 #if IOS
@@ -12,7 +13,13 @@ namespace Vapolia.Lib.Effects;
 
 public static class ElementExtensions
 {
-    public static RectangleF GetAbsoluteBounds(VisualElement? view)
+    public static RectangleF GetAbsoluteBounds(this PointEventArgs args)
+        => (args.Element as VisualElement).GetAbsoluteBounds();
+    
+    public static PointF GetCoordinates(this PointEventArgs args)
+        => (args.Element as VisualElement).GetCoordinates();
+    
+    public static RectangleF GetAbsoluteBounds(this VisualElement? view)
     {
         if(view == null)
             return RectangleF.Empty;
@@ -21,7 +28,7 @@ public static class ElementExtensions
         return new(location.X, location.Y, (float)view.Width, (float)view.Height);
     }
 
-    public static System.Drawing.PointF GetCoordinates(VisualElement element)
+    public static System.Drawing.PointF GetCoordinates(this VisualElement element)
     {
 #if ANDROID
         var nativeView = element.GetRenderer()?.View;
