@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using Vapolia.Lib.Ui;
+﻿using System;
+using System.Drawing;
 using Xamarin.Forms;
 
 #if IOS
@@ -9,7 +9,7 @@ using Xamarin.Forms.Platform.iOS;
 using Xamarin.Forms.Platform.Android;
 #endif
 
-namespace Vapolia.Lib.Effects;
+namespace Vapolia.Lib.Ui;
 
 public static class ElementExtensions
 {
