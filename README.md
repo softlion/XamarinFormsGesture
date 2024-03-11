@@ -1,4 +1,6 @@
-New version for MAUI here: https://github.com/vapolia/MauiGestures/
+# New version for MAUI here: https://github.com/vapolia/MauiGestures/
+
+### Below is version for Xamarin.Forms
 
 [![Build status](https://ci.appveyor.com/api/projects/status/8t8m8n0do3p0304n?svg=true)](https://ci.appveyor.com/project/softlion/xamarinformsgesture)
 
